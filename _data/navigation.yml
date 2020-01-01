@@ -2,12 +2,14 @@
 main:
   - title: "어바웃"
     url: /about/
+  - title: "블로그"
+    url: /blog/    
   - title: "프로젝트"
-    url: /project/
+    url: /projects/
   - title: "카테고리"
-    url: /category/
-  - title: "포스트"
-    url: /year-archive/
+    url: /categories/
+  - title: "태그"
+    url: /tags/
 
   # - title: "Quick-Start Guide"
   #   url: https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/
