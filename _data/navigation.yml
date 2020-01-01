@@ -1,9 +1,7 @@
 # main links
 main:
   - title: "어바웃"
-    url: /about/
-  - title: "블로그"
-    url: /blog/    
+    url: /about/  
   - title: "프로젝트"
     url: /projects/
   - title: "카테고리"
