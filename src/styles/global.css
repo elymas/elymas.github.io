@@ -3,26 +3,48 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
+  /* float on brand: Charcoal Deep accent */
+  --color-primary-50: #f0f4f7;
+  --color-primary-100: #d9e2e8;
+  --color-primary-200: #b3c5d1;
+  --color-primary-300: #8da8ba;
+  --color-primary-400: #678ba3;
+  --color-primary-500: #476a82;
+  --color-primary-600: #3a5a70;
+  --color-primary-700: #2c3e50;
+  --color-primary-800: #1f2d3a;
+  --color-primary-900: #131c24;
 
-  --color-surface-50: #f8fafc;
-  --color-surface-100: #f1f5f9;
-  --color-surface-200: #e2e8f0;
-  --color-surface-300: #cbd5e1;
-  --color-surface-400: #94a3b8;
-  --color-surface-500: #64748b;
-  --color-surface-600: #475569;
-  --color-surface-700: #334155;
-  --color-surface-800: #1e293b;
-  --color-surface-900: #0f172a;
-  --color-surface-950: #020617;
+  /* float on brand: Cream Float surface (light) / Charcoal (dark) */
+  --color-surface-50: #fafaf5;
+  --color-surface-100: #f5f5dc;
+  --color-surface-200: #ece8ca;
+  --color-surface-300: #d5d0b4;
+  --color-surface-400: #a09b82;
+  --color-surface-500: #7a7560;
+  --color-surface-600: #5a5646;
+  --color-surface-700: #3d3a30;
+  --color-surface-800: #2c3e50;
+  --color-surface-900: #1e2a36;
+  --color-surface-950: #141c24;
+
+  /* Brand-specific colors */
+  --color-cream: #f5f5dc;
+  --color-charcoal: #2c3e50;
+}
+
+/* Custom font stack for float on aesthetic */
+@layer base {
+  html {
+    font-family: 'Georgia', 'Cambria', 'Times New Roman', serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Georgia', 'Cambria', 'Times New Roman', serif;
+    letter-spacing: -0.01em;
+  }
+
+  body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
 }

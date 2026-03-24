@@ -6,34 +6,46 @@ import { getAllProjects } from '../utils/projects';
 const projects = getAllProjects();
 ---
 
-<BaseLayout title="elymas.github.io - Project Hub">
+<BaseLayout title="float on - elymas.github.io">
   <!-- Hero Section -->
-  <section class="relative overflow-hidden">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
+  <section class="relative overflow-hidden bg-cream dark:bg-charcoal">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
       <div class="text-center">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-surface-900 dark:text-surface-100">
-          Welcome to
-          <span class="text-primary-600 dark:text-primary-400">elymas</span>.github.io
+        <!-- Cloud decoration -->
+        <div class="flex justify-center mb-8">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="w-20 h-12 text-surface-400 dark:text-surface-300" aria-hidden="true">
+            <path d="M18 38c-4 0-7-2.6-7-6 0-3.2 2.2-5.6 5.4-6C16.4 18.4 22 14 28.5 14c5.6 0 10.4 3.4 12.2 8.4 1-.4 2-.6 3.2-.6 5 0 9 3.6 9 8.2 0 4.4-3.8 8-8.4 8H18z" />
+            <path d="M11 40c4 2.4 11 3.6 18 1 7-2.6 13-.4 19 2" opacity="0.4" />
+          </svg>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif tracking-tight text-charcoal dark:text-cream" style="font-family: Georgia, 'Times New Roman', serif;">
+          Archive for floating thoughts.
         </h1>
-        <p class="mt-6 text-lg sm:text-xl text-surface-600 dark:text-surface-400 max-w-2xl mx-auto leading-relaxed">
-          A central hub for all projects hosted on GitHub Pages.
-          Explore blogs, documentation, tutorials, and more.
+        <p class="mt-6 text-lg sm:text-xl text-surface-500 dark:text-surface-400 max-w-2xl mx-auto leading-relaxed">
+          A central hub for projects hosted on
+          <a href="https://elymas.github.io" class="inline-flex items-center gap-1.5 text-charcoal dark:text-cream hover:opacity-75 transition-opacity">
+            <img src="/banner.png" alt="float on" class="h-5 inline-block align-middle" />
+          </a>
         </p>
       </div>
     </div>
-    <!-- Decorative gradient -->
+    <!-- Decorative cloud pattern background -->
     <div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-primary-400/10 dark:bg-primary-600/5 blur-3xl"></div>
+      <div class="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-surface-300/10 dark:bg-surface-300/5 blur-3xl"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-surface-300/10 dark:bg-surface-300/5 blur-3xl"></div>
     </div>
   </section>
 
+  <!-- Divider -->
+  <div class="border-b border-surface-200 dark:border-surface-800"></div>
+
   <!-- Projects Section -->
-  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-20">
+  <section id="projects" class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-20">
     <div class="mb-10">
-      <h2 class="text-2xl sm:text-3xl font-bold text-surface-900 dark:text-surface-100">
+      <h2 class="text-2xl sm:text-3xl font-serif text-charcoal dark:text-cream" style="font-family: Georgia, 'Times New Roman', serif;">
         Projects
       </h2>
-      <p class="mt-2 text-surface-600 dark:text-surface-400">
+      <p class="mt-2 text-surface-500 dark:text-surface-400">
         Browse the collection of sites and applications.
       </p>
     </div>
