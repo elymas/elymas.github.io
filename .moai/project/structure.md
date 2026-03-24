@@ -43,7 +43,8 @@ github-pages/                          # 메인 허브 저장소 루트 (elymas.
 │       └── global.css                 # Tailwind CSS v4 import 및 전역 스타일
 │
 ├── public/                            # 빌드 과정 없이 그대로 복사되는 정적 파일
-│   └── favicon.svg                    # 파비콘
+│   ├── banner.png                     # float on 브랜드 배너 이미지 (OG/Twitter Card)
+│   └── favicon.svg                    # float on 클라우드 아이콘 파비콘
 │
 ├── astro.config.mjs                   # Astro 설정 파일 (@tailwindcss/vite, @astrojs/sitemap)
 ├── package.json                       # 프로젝트 의존성 및 스크립트

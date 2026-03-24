@@ -219,6 +219,36 @@ jobs:
 
 ---
 
+## 브랜드 디자인 시스템
+
+### "float on" 브랜드 아이덴티티
+
+메인 허브는 "float on" 브랜드 아이덴티티를 적용합니다.
+
+**컬러 팔레트**:
+- Primary (Charcoal Deep): #476a82 (500) ~ #2c3e50 (700) ~ #131c24 (900)
+- Surface (Cream Float): #fafaf5 (50) ~ #f5f5dc (100, cream) ~ #2c3e50 (800, charcoal)
+- Brand custom: `--color-cream: #f5f5dc`, `--color-charcoal: #2c3e50`
+
+**타이포그래피**:
+- 제목: Georgia 세리프 폰트 스택 (`Georgia, Cambria, Times New Roman, serif`), letter-spacing: -0.01em
+- 본문: system-ui 산세리프 스택 (`system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif`)
+
+**비주얼 요소**:
+- 로고: Cloud SVG 아이콘 + "float on" 세리프 텍스트
+- 히어로: Cloud 데코레이션, Cream/Charcoal 배경
+- 배너: `public/banner.png` (OG/Twitter Card 메타 이미지)
+
+### Tailwind CSS v4 커스텀 테마
+
+`src/styles/global.css`에서 `@theme` 디렉티브로 브랜드 색상을 정의합니다:
+- `@theme { --color-primary-*: ... }` - Charcoal Deep 팔레트
+- `@theme { --color-surface-*: ... }` - Cream Float 팔레트
+- `@theme { --color-cream: ...; --color-charcoal: ...; }` - 브랜드 전용 색상
+- `@layer base { ... }` - 글로벌 폰트 스택 적용
+
+---
+
 ## 개발 환경
 
 ### 시스템 요구사항

@@ -1,4 +1,4 @@
-# GitHub Pages Hosting Hub - Architecture Overview
+# float on - GitHub Pages Hosting Hub - Architecture Overview
 
 ## Project Goals
 
@@ -6,6 +6,7 @@
 - Main hub at elymas.github.io (Astro 6 SSG)
 - Sub-projects at elymas.github.io/{repo-name} (framework-agnostic)
 - Automated deployment via GitHub Actions
+- 'float on' brand identity: Cream/Charcoal palette, Georgia serif typography, cloud-themed visuals
 
 ## Architecture Pattern
 
@@ -18,7 +19,7 @@ The main hub (`github-pages` repository) serves as a central portal. Each sub-pr
 **Implemented** - Live at https://elymas.github.io
 
 Build: 0 TypeScript errors, 0 warnings, ~867ms build time
-Output: `dist/` (index.html, sitemap-index.xml, favicon.svg, robots.txt)
+Output: `dist/` (index.html, sitemap-index.xml, banner.png, favicon.svg, robots.txt)
 
 ---
 
@@ -28,8 +29,8 @@ The hub contains 5 Astro components:
 
 | Component | File | Responsibility |
 |---|---|---|
-| Header | `src/components/Header.astro` | Site header with logo and navigation |
-| Footer | `src/components/Footer.astro` | Site footer |
+| Header | `src/components/Header.astro` | Site header with 'float on' cloud logo, Projects link, and navigation |
+| Footer | `src/components/Footer.astro` | Site footer with cloud icon and 'float on' copyright |
 | ProjectCard | `src/components/ProjectCard.astro` | Individual project card display |
 | ProjectGrid | `src/components/ProjectGrid.astro` | Card grid layout container |
 | ThemeToggle | `src/components/ThemeToggle.astro` | Dark/light theme switch button |
@@ -125,3 +126,19 @@ https://elymas.github.io
 
 **Runtime requirement**: Node.js 22.x+ (Astro 6 requirement)
 **Package manager**: pnpm 9.x+
+
+---
+
+## Brand Design System
+
+**Brand**: "float on" — Archive for floating thoughts.
+
+| Element | Light Mode | Dark Mode |
+|---|---|---|
+| Background | Cream (#f5f5dc) | Charcoal (#2c3e50) |
+| Text | Charcoal (#2c3e50) | Cream (#f5f5dc) |
+| Primary accent | #476a82 | #678ba3 |
+| Headings font | Georgia, serif | Georgia, serif |
+| Body font | system-ui, sans-serif | system-ui, sans-serif |
+
+Custom Tailwind theme tokens defined in `src/styles/global.css` via `@theme` directive.
