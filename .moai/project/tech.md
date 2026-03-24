@@ -14,7 +14,7 @@
 
 ### Astro (메인 허브)
 
-**버전**: Astro 5.x 권장
+**버전**: Astro 6.x (실제 사용 버전: ^6.0.8)
 
 Astro는 메인 허브(`elymas.github.io`)의 핵심 프레임워크입니다.
 
@@ -27,7 +27,9 @@ Astro는 메인 허브(`elymas.github.io`)의 핵심 프레임워크입니다.
 
 **주요 설정 (`astro.config.mjs`)**:
 - `output: 'static'` - 정적 출력 모드
-- `integrations: [tailwind()]` - Tailwind CSS 통합
+- `vite.plugins: [@tailwindcss/vite()]` - Tailwind CSS v4 Vite 플러그인 방식 (NOT @astrojs/tailwind)
+- `integrations: [sitemap()]` - @astrojs/sitemap 통합
+- `site: 'https://elymas.github.io'` - 사이트 URL 설정
 - 메인 허브는 `base` 옵션 불필요 (루트 도메인 배포)
 
 ---
@@ -54,7 +56,7 @@ export default defineConfig({
 
 **핵심 패키지**:
 - `astro` - 핵심 프레임워크
-- `@astrojs/tailwind` - Tailwind CSS 통합
+- `@tailwindcss/vite` - Tailwind CSS v4 Vite 플러그인 (Astro 6 권장 방식)
 - `@astrojs/mdx` - MDX 지원 (선택적)
 - `@astrojs/sitemap` - 사이트맵 생성 (선택적)
 
@@ -183,7 +185,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       - uses: pnpm/action-setup@v4
       - run: pnpm install
       - run: pnpm build
@@ -201,15 +203,19 @@ jobs:
 
 | 패키지 | 버전 | 역할 |
 |---|---|---|
-| `astro` | ^5.x | 메인 프레임워크 |
-| `tailwindcss` | ^3.x 또는 ^4.x | CSS 유틸리티 |
-| `@astrojs/tailwind` | latest | Astro-Tailwind 통합 |
-| `typescript` | ^5.x | 타입 안전성 |
+| `astro` | ^6.0.8 | 메인 프레임워크 |
+| `tailwindcss` | ^4.2.2 | CSS 유틸리티 (v4) |
+| `@tailwindcss/vite` | (tailwindcss에 포함) | Astro용 Tailwind CSS v4 Vite 플러그인 |
+| `@astrojs/sitemap` | ^3.7.1 | 사이트맵 생성 |
+| `typescript` | ^6.0.2 | 타입 안전성 |
 
-### Tailwind CSS 버전 선택 가이드
+### Tailwind CSS v4 통합 방식
 
-- **Tailwind CSS v3**: 안정적, 문서 풍부, Astro @astrojs/tailwind 통합 권장
-- **Tailwind CSS v4**: 최신 버전, CSS 네이티브 변수 기반, Astro에서 직접 CSS import 방식 사용
+메인 허브는 **Tailwind CSS v4**를 사용합니다. v4는 `@astrojs/tailwind` 통합 대신 Vite 플러그인 방식을 사용합니다.
+
+- **`@tailwindcss/vite`**: `astro.config.mjs`의 `vite.plugins` 배열에 직접 추가
+- **CSS 파일**: `@import "tailwindcss";` 한 줄로 전체 유틸리티 임포트
+- **설정 파일**: `tailwind.config.mjs` 불필요 (CSS 네이티브 변수 기반)
 
 ---
 
@@ -219,8 +225,8 @@ jobs:
 
 | 항목 | 버전 |
 |---|---|
-| Node.js | 20.x 이상 (LTS 권장) |
-| pnpm | 8.x 이상 |
+| Node.js | 22.x 이상 (Astro 6 요구사항) |
+| pnpm | 9.x 이상 |
 | Git | 2.x 이상 |
 
 ### 로컬 개발 실행

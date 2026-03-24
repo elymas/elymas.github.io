@@ -5,6 +5,7 @@
 **프로젝트명**: GitHub Pages Hosting Hub
 **GitHub 사용자명**: elymas
 **메인 허브 URL**: https://elymas.github.io
+**배포 상태**: Live at https://elymas.github.io
 
 GitHub Pages Hosting Hub는 단일 GitHub 계정에서 여러 개의 독립적인 웹사이트를 체계적으로 관리하고 배포하기 위한 다중 저장소 정적 사이트 허브 시스템입니다. Astro 기반의 메인 허브가 모든 서브 프로젝트를 연결하는 게이트웨이 역할을 수행하며, 각 서브 프로젝트는 독립된 저장소로 관리됩니다.
 
@@ -66,7 +67,7 @@ GitHub Pages의 서브 경로 배포 구조에 맞게 각 프레임워크의 bas
 
 - 메인 허브와 서브 프로젝트 각각 독립적인 배포 파이프라인
 - `gh-pages` 브랜치 방식 대신 GitHub Actions 직접 배포 방식 사용
-- Node.js 20 기반의 빌드 환경
+- Node.js 22 기반의 빌드 환경 (Astro 6 요구사항)
 - 빌드 실패 시 자동 알림 및 롤백 지원
 
 ---

@@ -22,27 +22,36 @@ elymas.github.io/learn-react  (서브 프로젝트: learn-react 저장소)
 ```
 github-pages/                          # 메인 허브 저장소 루트 (elymas.github.io)
 │
-├── src/                               # Astro 소스 코드
-│   ├── layouts/                       # 공유 레이아웃 컴포넌트
+├── src/                               # Astro 소스 코드 (11개 파일)
+│   ├── components/                    # 재사용 가능한 Astro 컴포넌트 (5개)
+│   │   ├── Header.astro               # 사이트 헤더 (로고, 네비게이션)
+│   │   ├── Footer.astro               # 사이트 푸터
+│   │   ├── ProjectCard.astro          # 서브 프로젝트 카드 컴포넌트
+│   │   ├── ProjectGrid.astro          # 프로젝트 카드 그리드 레이아웃
+│   │   └── ThemeToggle.astro          # 다크/라이트 테마 전환 버튼
+│   ├── layouts/                       # 공유 레이아웃 컴포넌트 (1개)
 │   │   └── BaseLayout.astro           # 기본 HTML 레이아웃 (head, header, footer 포함)
-│   ├── pages/                         # Astro 페이지 (파일 기반 라우팅)
+│   ├── pages/                         # Astro 페이지 (파일 기반 라우팅) (1개)
 │   │   └── index.astro                # 메인 허브 홈페이지 (서브 프로젝트 목록 표시)
-│   ├── components/                    # 재사용 가능한 Astro/React 컴포넌트
-│   │   └── ProjectCard.astro          # 서브 프로젝트 카드 컴포넌트
-│   └── styles/                        # 전역 스타일
-│       └── global.css                 # Tailwind CSS 지시어 및 전역 스타일
+│   ├── data/                          # 정적 데이터 파일 (1개)
+│   │   └── projects.json              # 서브 프로젝트 메타데이터 레지스트리
+│   ├── types/                         # TypeScript 타입 정의 (1개)
+│   │   └── project.ts                 # Project 인터페이스 타입 정의
+│   ├── utils/                         # 유틸리티 함수 (1개)
+│   │   └── projects.ts                # 프로젝트 데이터 로드 및 필터링 유틸리티
+│   └── styles/                        # 전역 스타일 (1개)
+│       └── global.css                 # Tailwind CSS v4 import 및 전역 스타일
 │
 ├── public/                            # 빌드 과정 없이 그대로 복사되는 정적 파일
 │   └── favicon.svg                    # 파비콘
 │
-├── astro.config.mjs                   # Astro 설정 파일
+├── astro.config.mjs                   # Astro 설정 파일 (@tailwindcss/vite, @astrojs/sitemap)
 ├── package.json                       # 프로젝트 의존성 및 스크립트
 ├── tsconfig.json                      # TypeScript 설정
-├── tailwind.config.mjs                # Tailwind CSS 설정
 │
 ├── .github/                           # GitHub 관련 설정
 │   └── workflows/
-│       └── deploy.yml                 # GitHub Actions 배포 워크플로우
+│       └── deploy.yml                 # GitHub Actions 배포 워크플로우 (Node.js 22)
 │
 └── .moai/                             # MoAI 프로젝트 설정
     ├── config/                        # MoAI 설정 파일
@@ -62,8 +71,10 @@ github-pages/                          # 메인 허브 저장소 루트 (elymas.
 메인 허브의 Astro 설정 파일입니다. 메인 허브는 루트 도메인(`elymas.github.io`)에 배포되므로 `base` 설정이 필요하지 않습니다.
 
 주요 설정 항목:
+- `site: 'https://elymas.github.io'` - 사이트 URL (sitemap 생성에 필요)
 - `output: 'static'` - 정적 사이트 생성 모드
-- `integrations: [tailwind()]` - Tailwind CSS 통합
+- `vite.plugins: [tailwindcss()]` - Tailwind CSS v4 Vite 플러그인 방식
+- `integrations: [sitemap()]` - @astrojs/sitemap 통합
 - 서브 프로젝트와 달리 `base` 옵션 불필요
 
 ### `src/pages/index.astro`
@@ -76,9 +87,9 @@ github-pages/                          # 메인 허브 저장소 루트 (elymas.
 
 주요 단계:
 1. 코드 체크아웃
-2. Node.js 20 환경 설정
+2. Node.js 22 환경 설정 (Astro 6 요구사항)
 3. pnpm 의존성 설치
-4. `astro build` 실행
+4. `astro check && astro build` 실행
 5. `dist/` 폴더를 GitHub Pages에 배포
 
 ---

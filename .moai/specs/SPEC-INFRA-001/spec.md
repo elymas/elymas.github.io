@@ -1,7 +1,7 @@
 ---
 id: SPEC-INFRA-001
-version: "1.0.0"
-status: draft
+version: "1.1.0"
+status: implemented
 created: "2026-03-24"
 updated: "2026-03-24"
 author: limbowl
@@ -18,6 +18,7 @@ lifecycle: spec-anchored
 | 버전 | 날짜 | 작성자 | 변경 내용 |
 |------|------|--------|-----------|
 | 1.0.0 | 2026-03-24 | limbowl | 초기 SPEC 작성 |
+| 1.1.0 | 2026-03-24 | limbowl | 구현 완료, 실제 버전 반영 (Astro 6, Tailwind 4, TS 6) |
 
 ---
 
@@ -58,11 +59,11 @@ GitHub Pages Hosting Hub의 메인 허브 사이트(`elymas.github.io`)를 Astro
 
 | 항목 | 사양 |
 |------|------|
-| 런타임 | Node.js 20.x LTS |
-| 패키지 매니저 | pnpm 8.x+ |
-| 프레임워크 | Astro 5.x |
-| 언어 | TypeScript 5.x |
-| CSS 프레임워크 | Tailwind CSS (v3 또는 v4) |
+| 런타임 | Node.js 22.x+ (Astro 6 요구사항) |
+| 패키지 매니저 | pnpm 9.x+ |
+| 프레임워크 | Astro 6.x (^6.0.8) |
+| 언어 | TypeScript 6.x (^6.0.2) |
+| CSS 프레임워크 | Tailwind CSS v4 (^4.2.2, @tailwindcss/vite 방식) |
 | 배포 플랫폼 | GitHub Pages |
 | CI/CD | GitHub Actions |
 
@@ -105,8 +106,9 @@ GitHub Pages Hosting Hub의 메인 허브 사이트(`elymas.github.io`)를 Astro
 
 #### REQ-SETUP-001: Astro 프레임워크 기반 구축
 - **유형**: Ubiquitous
-- **설명**: 허브 사이트는 **항상** Astro 5.x SSG 프레임워크를 사용하여 정적 사이트로 빌드해야 한다.
-- **EARS**: The hub site **shall** use Astro 5.x with `output: 'static'` configuration.
+- **설명**: 허브 사이트는 **항상** Astro 6.x SSG 프레임워크를 사용하여 정적 사이트로 빌드해야 한다.
+- **EARS**: The hub site **shall** use Astro 6.x with `output: 'static'` configuration.
+- **구현 상태**: 완료 (astro ^6.0.8)
 
 #### REQ-SETUP-002: TypeScript 지원
 - **유형**: Ubiquitous
@@ -116,7 +118,8 @@ GitHub Pages Hosting Hub의 메인 허브 사이트(`elymas.github.io`)를 Astro
 #### REQ-SETUP-003: Tailwind CSS 통합
 - **유형**: Ubiquitous
 - **설명**: 스타일링은 **항상** Tailwind CSS를 통해 처리해야 한다.
-- **EARS**: The hub site **shall** integrate Tailwind CSS via `@astrojs/tailwind` for all styling.
+- **EARS**: The hub site **shall** integrate Tailwind CSS v4 via `@tailwindcss/vite` Vite plugin for all styling.
+- **구현 상태**: 완료 (tailwindcss ^4.2.2, @tailwindcss/vite 방식 - NOT @astrojs/tailwind)
 
 #### REQ-SETUP-004: pnpm 패키지 매니저
 - **유형**: Ubiquitous
@@ -206,8 +209,9 @@ GitHub Pages Hosting Hub의 메인 허브 사이트(`elymas.github.io`)를 Astro
 
 #### REQ-CICD-002: 빌드 환경 설정
 - **유형**: Ubiquitous
-- **설명**: 빌드 환경은 **항상** Node.js 20, pnpm, `actions/deploy-pages@v4`를 사용해야 한다.
-- **EARS**: The CI/CD workflow **shall** use Node.js 20, pnpm, and `actions/deploy-pages@v4` for deployment.
+- **설명**: 빌드 환경은 **항상** Node.js 22, pnpm, `actions/deploy-pages@v4`를 사용해야 한다.
+- **EARS**: The CI/CD workflow **shall** use Node.js 22, pnpm, and `actions/deploy-pages@v4` for deployment.
+- **구현 상태**: 완료 (Node.js 22 사용 중)
 
 #### REQ-CICD-003: 빌드 실패 처리
 - **유형**: Unwanted Behavior
