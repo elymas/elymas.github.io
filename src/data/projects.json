@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Tech Blog",
+    "description": "A personal tech blog covering web development, cloud architecture, and developer tooling. Written with practical examples and deep-dive tutorials.",
+    "url": "https://elymas.github.io/blog",
+    "type": "blog",
+    "techStack": ["Astro", "MDX", "Tailwind CSS"],
+    "featured": true,
+    "status": "coming-soon"
+  },
+  {
+    "name": "Project Docs",
+    "description": "Centralized documentation hub for open-source projects. Includes API references, architecture guides, and contribution guidelines.",
+    "url": "https://elymas.github.io/docs",
+    "type": "docs",
+    "techStack": ["Nextra", "Next.js", "MDX"],
+    "featured": true,
+    "status": "coming-soon"
+  },
+  {
+    "name": "Learn React",
+    "description": "An interactive tutorial for learning React from scratch. Step-by-step lessons with live code examples and hands-on exercises.",
+    "url": "https://elymas.github.io/learn-react",
+    "type": "tutorial",
+    "techStack": ["React", "TypeScript", "Vite"],
+    "featured": false,
+    "status": "coming-soon"
+  }
+]
