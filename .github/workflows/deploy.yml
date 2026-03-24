@@ -5,8 +5,6 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Re-register push trigger
-
 permissions:
   contents: read
   pages: write
