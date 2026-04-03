@@ -1,28 +1,37 @@
 [
   {
+    "name": "Claude Usage Dashboard",
+    "description": "Claude Code token usage dashboard for teams. Collects daily usage from local JSONL logs via Collector, stores in Supabase, and visualizes team-wide metrics with charts, tables, and CSV export.",
+    "url": "https://github.com/elymas/claude-usage-dashboard",
+    "type": "app",
+    "techStack": ["Next.js", "TypeScript", "Supabase"],
+    "featured": true,
+    "status": "active"
+  },
+  {
+    "name": "AI Agent Seminar",
+    "description": "A 6-week, 12-session brownbag seminar on operating AI as an agent system. Covers the adoption ladder from prompting to full AI operations, designed for all skill levels.",
+    "url": "https://elymas.github.io/agent-seminar/",
+    "type": "landing",
+    "techStack": ["HTML", "CSS", "JavaScript"],
+    "featured": true,
+    "status": "active"
+  },
+  {
+    "name": "Solar System Simulator",
+    "description": "Interactive 3D solar system simulator with realistic planetary orbits, textures, and camera controls. Explore the solar system in your browser.",
+    "url": "https://elymas.github.io/solar-simulator/",
+    "type": "app",
+    "techStack": ["Three.js", "TypeScript", "Vite"],
+    "featured": true,
+    "status": "active"
+  },
+  {
     "name": "Tech Blog",
     "description": "A personal tech blog covering web development, cloud architecture, and developer tooling. Written with practical examples and deep-dive tutorials.",
     "url": "https://elymas.github.io/blog",
     "type": "blog",
     "techStack": ["Astro", "MDX", "Tailwind CSS"],
-    "featured": true,
-    "status": "coming-soon"
-  },
-  {
-    "name": "Project Docs",
-    "description": "Centralized documentation hub for open-source projects. Includes API references, architecture guides, and contribution guidelines.",
-    "url": "https://elymas.github.io/docs",
-    "type": "docs",
-    "techStack": ["Nextra", "Next.js", "MDX"],
-    "featured": true,
-    "status": "coming-soon"
-  },
-  {
-    "name": "Learn React",
-    "description": "An interactive tutorial for learning React from scratch. Step-by-step lessons with live code examples and hands-on exercises.",
-    "url": "https://elymas.github.io/learn-react",
-    "type": "tutorial",
-    "techStack": ["React", "TypeScript", "Vite"],
     "featured": false,
     "status": "coming-soon"
   }
