@@ -45,6 +45,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+    <!-- Theme color for browser chrome -->
+    <meta name="theme-color" content="#fafaf5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#141c24" media="(prefers-color-scheme: dark)" />
+
     <!-- FOUC Prevention: apply theme before paint -->
     <script is:inline>
       (function () {
