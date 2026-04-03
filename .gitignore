@@ -192,11 +192,6 @@ node_modules/
 out/
 
 # ===========================================
-# Astro
-# ===========================================
-.astro/
-
-# ===========================================
 # Build Tools & Frameworks
 # ===========================================
 .turbo/
@@ -209,4 +204,7 @@ dist-ssr/
 .vercel/
 .netlify/
 .firebase/
+
+# User Custom Patterns (preserved by moai update)
+.astro/
 .gstack/
