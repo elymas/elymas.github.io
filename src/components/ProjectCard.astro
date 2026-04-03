@@ -24,7 +24,7 @@ const isArchived = project.status === 'archived';
 {isComingSoon ? (
   <div
     class:list={[
-      'group block rounded-xl border border-surface-200 dark:border-surface-800 bg-cream dark:bg-surface-900 p-6 transition-all duration-200',
+      'group block rounded-xl border border-surface-200 dark:border-surface-800 bg-cream dark:bg-surface-800 p-6 transition-all duration-200',
       'opacity-80 cursor-default',
       isArchived && 'opacity-60',
     ]}
@@ -60,7 +60,7 @@ const isArchived = project.status === 'archived';
     target="_blank"
     rel="noopener noreferrer"
     class:list={[
-      'group block rounded-xl border border-surface-200 dark:border-surface-800 bg-cream dark:bg-surface-900 p-6 transition-all duration-200',
+      'group block rounded-xl border border-surface-200 dark:border-surface-800 bg-cream dark:bg-surface-800 p-6 transition-all duration-200',
       'hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 hover:-translate-y-0.5',
       isArchived && 'opacity-60',
     ]}

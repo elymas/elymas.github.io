@@ -13,128 +13,128 @@
 
 ## Frontend Framework
 
-Framework: _TBD_
-<!-- Example: Next.js 15 (App Router) -->
+Framework: Astro 6
+<!-- Static site generator with component islands architecture -->
 
-Version: _TBD_
-<!-- Example: latest stable -->
+Version: ^6.0.8 (latest stable)
+<!-- Defined in package.json -->
 
-Rendering Strategy: _TBD_
-<!-- Example: SSR by default, SSG for marketing pages, CSR for dashboards -->
+Rendering Strategy: Static output (output: 'static' in astro.config.mjs)
+<!-- Fully pre-rendered at build time; no server-side rendering -->
 
 ## Styling
 
-Approach: _TBD_
-<!-- Example: Tailwind CSS v4 -->
+Approach: Tailwind CSS 4 (via @tailwindcss/vite plugin)
+<!-- Configured as Vite plugin in astro.config.mjs, not as Astro integration -->
 
-CSS Architecture: _TBD_
-<!-- Example: utility-first with component extraction for repeated patterns -->
+CSS Architecture: Utility-first with @theme custom properties for brand colors; @layer base for font stack overrides
+<!-- Custom color scales defined in src/styles/global.css using @theme block -->
 
-Theme System: _TBD_
-<!-- Example: CSS custom properties for design tokens, dark mode via class strategy -->
+Theme System: CSS custom properties for design tokens, dark mode via class strategy (@custom-variant dark)
+<!-- FOUC prevention script applies .dark class before paint based on localStorage or system preference -->
 
 ## Component Library
 
-Library: _TBD_
-<!-- Example: shadcn/ui (copy-paste, not installed as dependency) -->
+Library: None; all components are hand-written Astro components
+<!-- No external component library; 6 custom .astro components in src/components/ -->
 
-Customization Level: _TBD_
-<!-- Example: full ownership, all components live in src/components/ui/ -->
+Customization Level: Full ownership; all components, layouts, and pages are bespoke
+<!-- Header, Footer, ThemeToggle, ProjectGrid, ProjectCard, BaseLayout -->
 
-Animation Library: _TBD_
-<!-- Example: Framer Motion for page transitions, CSS transitions for micro-interactions -->
+Animation Library: None; CSS transitions only (transition-colors, transition-opacity, transition-all duration-200)
+<!-- Subtle hover effects and color transitions via Tailwind utility classes -->
 
 ## Language
 
-Language: _TBD_
-<!-- Example: TypeScript 5.x -->
+Language: TypeScript 6.x
+<!-- ^6.0.2 in devDependencies; used for Astro component frontmatter and utilities -->
 
-Strict Mode: _TBD_
-<!-- Example: yes, strict: true in tsconfig.json -->
+Strict Mode: Yes, extends astro/tsconfigs/strict
+<!-- Path aliases configured: @/* maps to src/* -->
 
-Linting: _TBD_
-<!-- Example: ESLint 9 flat config with @typescript-eslint -->
+Linting: No ESLint configured (no .eslintrc or eslint.config in project root)
+<!-- Relies on TypeScript strict checking and astro check -->
 
-Formatting: _TBD_
-<!-- Example: Prettier with default settings, or Biome -->
+Formatting: Prettier 3.x with prettier-plugin-astro
+<!-- Config: semi, singleQuote, trailingComma: all, printWidth: 100, tabWidth: 2 -->
 
 ## Build Tool
 
-Bundler: _TBD_
-<!-- Example: Turbopack (via Next.js), Vite for standalone projects -->
+Bundler: Vite (via Astro's built-in Vite integration)
+<!-- Tailwind CSS configured as Vite plugin -->
 
-Package Manager: _TBD_
-<!-- Example: pnpm 9.x -->
+Package Manager: pnpm 9
+<!-- Lock file: pnpm-lock.yaml -->
 
-Monorepo Tool: _TBD_
-<!-- Example: Turborepo, or N/A for single-project repos -->
+Monorepo Tool: N/A (single-project repository)
+<!-- Each GitHub Pages sub-site is a separate repository -->
 
 ## Hosting and Deployment
 
-Platform: _TBD_
-<!-- Example: Vercel (production), Preview deployments per PR -->
+Platform: GitHub Pages (static hosting)
+<!-- Free hosting tied to elymas GitHub account -->
 
-CI/CD: _TBD_
-<!-- Example: GitHub Actions for tests and linting, Vercel for deploy -->
+CI/CD: GitHub Actions (automated build and deploy on push to main)
+<!-- Astro build includes astro check + astro build -->
 
-Environment Strategy: _TBD_
-<!-- Example: development, staging (preview), production -->
+Environment Strategy: Single environment (production only); local dev via astro dev
+<!-- No staging or preview deployment infrastructure -->
 
-Domain: _TBD_
-<!-- Example: example.com, managed via Cloudflare DNS -->
+Domain: elymas.github.io (GitHub Pages default domain)
+<!-- Configured as site URL in astro.config.mjs -->
 
 ## External Integrations
 
 ### Analytics
 
-Provider: _TBD_
-<!-- Example: PostHog (self-hosted) or Vercel Analytics -->
+Provider: None
+<!-- No analytics integration; static site with no tracking -->
 
 ### CMS
 
-Provider: _TBD_
-<!-- Example: Sanity, Contentful, or Markdown files in repo -->
+Provider: TypeScript data file (src/utils/projects.ts)
+<!-- Project data is hardcoded in source; no external CMS -->
 
 ### Authentication
 
-Provider: _TBD_
-<!-- Example: Clerk, Auth0, or NextAuth.js -->
+Provider: None (static site, no user accounts)
+<!-- No authentication required -->
 
 ### Database
 
-Provider: _TBD_
-<!-- Example: Neon (serverless PostgreSQL), Supabase, PlanetScale -->
+Provider: None (static site, no server-side data)
+<!-- All data is build-time static -->
 
-ORM: _TBD_
-<!-- Example: Drizzle ORM, Prisma -->
+ORM: N/A
+<!-- No database -->
 
 ### Email
 
-Provider: _TBD_
-<!-- Example: Resend, SendGrid -->
+Provider: None
+<!-- No email functionality -->
 
 ### Payments
 
-Provider: _TBD_
-<!-- Example: Stripe -->
+Provider: None
+<!-- No monetization -->
 
 ### Error Tracking
 
-Provider: _TBD_
-<!-- Example: Sentry -->
+Provider: None
+<!-- No error tracking; static site with no runtime server -->
 
 ### Feature Flags
 
-Provider: _TBD_
-<!-- Example: LaunchDarkly, Vercel Edge Config, or none -->
+Provider: None
+<!-- No feature flags -->
 
 ## Development Environment
 
-IDE: _TBD_
-<!-- Example: VS Code with Claude Code extension -->
+IDE: Claude Code (terminal-based AI development)
+<!-- MoAI-ADK agent system configured in .claude/ and .moai/ directories -->
 
-Node Version: _TBD_
-<!-- Example: 22 LTS, managed via .nvmrc -->
+Node Version: 22 LTS
+<!-- No .nvmrc file; version inferred from package.json engine compatibility -->
 
-OS Targets: _TBD_
-<!-- Example: macOS primary, Linux CI, Windows optional -->
+OS Targets: macOS primary (Darwin), Linux CI (GitHub Actions)
+<!-- Development on macOS; deployment via GitHub Actions Linux runners -->
