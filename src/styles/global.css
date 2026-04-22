@@ -3,48 +3,61 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* float on brand: Charcoal Deep accent */
-  --color-primary-50: #f0f4f7;
-  --color-primary-100: #d9e2e8;
-  --color-primary-200: #b3c5d1;
-  --color-primary-300: #8da8ba;
-  --color-primary-400: #678ba3;
-  --color-primary-500: #476a82;
-  --color-primary-600: #3a5a70;
-  --color-primary-700: #2c3e50;
-  --color-primary-800: #1f2d3a;
-  --color-primary-900: #131c24;
+  /* Fonts — designlang (Fraunces display + Instrument Sans body) */
+  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace;
 
-  /* float on brand: Cream Float surface (light) / Charcoal (dark) */
-  --color-surface-50: #fafaf5;
-  --color-surface-100: #f5f5dc;
-  --color-surface-200: #ece8ca;
-  --color-surface-300: #d5d0b4;
-  --color-surface-400: #a09b82;
-  --color-surface-500: #7a7560;
-  --color-surface-600: #5a5646;
-  --color-surface-700: #3d3a30;
-  --color-surface-800: #2c3e50;
-  --color-surface-900: #1e2a36;
-  --color-surface-950: #141c24;
+  /* Primary — orange accent scale derived from #ff4800 (hsl 17,100%,50%) */
+  --color-primary-50: #fff1ec;
+  --color-primary-100: #ffddd1;
+  --color-primary-200: #ffb59d;
+  --color-primary-300: #ff8d68;
+  --color-primary-400: #ff6634;
+  --color-primary-500: #ff4800;
+  --color-primary-600: #cc3a00;
+  --color-primary-700: #992b00;
+  --color-primary-800: #661d00;
+  --color-primary-900: #330e00;
 
-  /* Brand-specific colors */
-  --color-cream: #f5f5dc;
-  --color-charcoal: #2c3e50;
+  /* Surface — warm paper→ink scale (designlang neutrals) */
+  --color-surface-50: #faf8f2;
+  --color-surface-100: #f3f1ea;
+  --color-surface-200: #ece8dd;
+  --color-surface-300: #d8d3c5;
+  --color-surface-400: #b8b199;
+  --color-surface-500: #8b8778;
+  --color-surface-600: #6b6759;
+  --color-surface-700: #403c34;
+  --color-surface-800: #2a2722;
+  --color-surface-900: #1a1814;
+  --color-surface-950: #0a0908;
+
+  /* Brand aliases */
+  --color-cream: #f3f1ea;
+  --color-charcoal: #0a0908;
+
+  /* Designlang semantic tokens */
+  --color-paper: #f3f1ea;
+  --color-paper-2: #ece8dd;
+  --color-paper-3: #d8d3c5;
+  --color-ink: #0a0908;
+  --color-ink-2: #403c34;
+  --color-ink-3: #8b8778;
+  --color-accent: #ff4800;
 }
 
-/* Custom font stack for float on aesthetic */
 @layer base {
   html {
-    font-family: 'Georgia', 'Cambria', 'Times New Roman', serif;
+    font-family: var(--font-serif);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Georgia', 'Cambria', 'Times New Roman', serif;
+    font-family: var(--font-serif);
     letter-spacing: -0.01em;
   }
 
   body {
-    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: var(--font-sans);
   }
 }
