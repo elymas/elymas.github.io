@@ -24,7 +24,7 @@ const isArchived = project.status === 'archived';
 {isComingSoon ? (
   <div
     class:list={[
-      'group block rounded-xl border border-surface-200 dark:border-surface-800 bg-cream dark:bg-surface-800 p-6 transition-all duration-200',
+      'group block rounded-xl border border-paper-2 dark:border-surface-800 bg-paper dark:bg-surface-800 p-6 transition-all duration-200',
       'opacity-80 cursor-default',
       isArchived && 'opacity-60',
     ]}
@@ -33,12 +33,12 @@ const isArchived = project.status === 'archived';
       <span class:list={['inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium', colors.bg, colors.text]}>
         {project.type}
       </span>
-      <span class="inline-flex items-center rounded-full bg-surface-200 dark:bg-surface-800 px-2.5 py-0.5 text-xs font-medium text-surface-600 dark:text-surface-400">
+      <span class="inline-flex items-center rounded-full bg-paper-2 dark:bg-surface-800 px-2.5 py-0.5 text-xs font-medium text-surface-600 dark:text-surface-400">
         Coming Soon
       </span>
     </div>
 
-    <h3 class="font-serif text-lg font-semibold text-charcoal dark:text-cream mb-2 transition-colors">
+    <h3 class="font-serif text-lg font-semibold text-ink dark:text-paper mb-2 transition-colors">
       {project.name}
     </h3>
 
@@ -48,7 +48,7 @@ const isArchived = project.status === 'archived';
 
     <div class="flex flex-wrap gap-1.5">
       {project.techStack.map((tech) => (
-        <span class="inline-flex items-center rounded-md bg-surface-200 dark:bg-surface-800 px-2 py-0.5 text-xs text-surface-600 dark:text-surface-400">
+        <span class="inline-flex items-center rounded-md bg-paper-2 dark:bg-surface-800 px-2 py-0.5 text-xs text-surface-600 dark:text-surface-400">
           {tech}
         </span>
       ))}
@@ -60,7 +60,7 @@ const isArchived = project.status === 'archived';
     target="_blank"
     rel="noopener noreferrer"
     class:list={[
-      'group block rounded-xl border border-surface-200 dark:border-surface-800 bg-cream dark:bg-surface-800 p-6 transition-all duration-200',
+      'group block rounded-xl border border-paper-2 dark:border-surface-800 bg-paper dark:bg-surface-800 p-6 transition-all duration-200',
       'hover:shadow-lg hover:border-primary-400 dark:hover:border-primary-600 hover:-translate-y-0.5',
       isArchived && 'opacity-60',
     ]}
@@ -71,7 +71,7 @@ const isArchived = project.status === 'archived';
       </span>
     </div>
 
-    <h3 class="font-serif text-lg font-semibold text-charcoal dark:text-cream mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+    <h3 class="font-serif text-lg font-semibold text-ink dark:text-paper mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
       {project.name}
     </h3>
 
@@ -81,7 +81,7 @@ const isArchived = project.status === 'archived';
 
     <div class="flex flex-wrap gap-1.5">
       {project.techStack.map((tech) => (
-        <span class="inline-flex items-center rounded-md bg-surface-200 dark:bg-surface-800 px-2 py-0.5 text-xs text-surface-600 dark:text-surface-400">
+        <span class="inline-flex items-center rounded-md bg-paper-2 dark:bg-surface-800 px-2 py-0.5 text-xs text-surface-600 dark:text-surface-400">
           {tech}
         </span>
       ))}
