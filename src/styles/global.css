@@ -3,48 +3,48 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Fonts — designlang (Fraunces display + Instrument Sans body) */
-  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --font-sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace;
+  /* Fonts — Printing Press design language (Newsreader display + Geist body) */
+  --font-serif: 'Newsreader', 'Iowan Old Style', 'Charter', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Geist', -apple-system, 'Helvetica Neue', Helvetica, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace;
 
-  /* Primary — orange accent scale derived from #ff4800 (hsl 17,100%,50%) */
-  --color-primary-50: #fff1ec;
-  --color-primary-100: #ffddd1;
-  --color-primary-200: #ffb59d;
-  --color-primary-300: #ff8d68;
-  --color-primary-400: #ff6634;
-  --color-primary-500: #ff4800;
-  --color-primary-600: #cc3a00;
-  --color-primary-700: #992b00;
-  --color-primary-800: #661d00;
-  --color-primary-900: #330e00;
+  /* Primary — crimson scale derived from #c80027 (hsl 348, 100%, 39%) */
+  --color-primary-50: hsl(348, 100%, 97%);
+  --color-primary-100: hsl(348, 100%, 94%);
+  --color-primary-200: hsl(348, 100%, 86%);
+  --color-primary-300: hsl(348, 100%, 72%);
+  --color-primary-400: hsl(348, 100%, 56%);
+  --color-primary-500: #c80027;
+  --color-primary-600: hsl(348, 100%, 32%);
+  --color-primary-700: hsl(348, 100%, 26%);
+  --color-primary-800: hsl(348, 100%, 18%);
+  --color-primary-900: hsl(348, 100%, 12%);
 
-  /* Surface — warm paper→ink scale (designlang neutrals) */
-  --color-surface-50: #faf8f2;
-  --color-surface-100: #f3f1ea;
-  --color-surface-200: #ece8dd;
-  --color-surface-300: #d8d3c5;
-  --color-surface-400: #b8b199;
-  --color-surface-500: #8b8778;
-  --color-surface-600: #6b6759;
-  --color-surface-700: #403c34;
-  --color-surface-800: #2a2722;
-  --color-surface-900: #1a1814;
-  --color-surface-950: #0a0908;
+  /* Surface — warm paper→ink scale (Printing Press neutrals) */
+  --color-surface-50: #faf8f3;
+  --color-surface-100: #f4efe6;
+  --color-surface-200: #ede6d8;
+  --color-surface-300: #e7dcca;
+  --color-surface-400: #c4b89e;
+  --color-surface-500: #9a8f82;
+  --color-surface-600: #7a7166;
+  --color-surface-700: #5a524a;
+  --color-surface-800: #38322d;
+  --color-surface-900: #1b1816;
+  --color-surface-950: #030202;
 
   /* Brand aliases */
-  --color-cream: #f3f1ea;
-  --color-charcoal: #0a0908;
+  --color-cream: #f4efe6;
+  --color-charcoal: #1b1816;
 
-  /* Designlang semantic tokens */
-  --color-paper: #f3f1ea;
-  --color-paper-2: #ece8dd;
-  --color-paper-3: #d8d3c5;
-  --color-ink: #0a0908;
-  --color-ink-2: #403c34;
-  --color-ink-3: #8b8778;
-  --color-accent: #ff4800;
+  /* Designlang semantic tokens — Printing Press */
+  --color-paper: #f4efe6;
+  --color-paper-2: #ede6d8;
+  --color-paper-3: #e7dcca;
+  --color-ink: #1b1816;
+  --color-ink-2: #5a524a;
+  --color-ink-3: #9a8f82;
+  --color-accent: #e5006d;
 }
 
 @layer base {
@@ -54,7 +54,8 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.025em;
+    font-weight: 400;
   }
 
   body {
