@@ -45,6 +45,14 @@
   --color-ink-2: #5a524a;
   --color-ink-3: #9a8f82;
   --color-accent: #e5006d;
+
+  /* Success/green — Printing Press accent */
+  --color-success-50: hsl(140, 55%, 95%);
+  --color-success-100: hsl(140, 55%, 88%);
+  --color-success-400: hsl(140, 55%, 40%);
+  --color-success-500: #1f6b3a;
+  --color-success-600: hsl(140, 55%, 22%);
+  --color-success-700: hsl(140, 55%, 18%);
 }
 
 @layer base {
