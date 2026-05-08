@@ -34,5 +34,14 @@
     "techStack": ["Astro", "MDX", "Tailwind CSS"],
     "featured": false,
     "status": "coming-soon"
+  },
+  {
+    "name": "Superwork — AI 네이티브 개발 조직",
+    "description": "기획·개발·검증·배포 전 과정을 AI 에이전트가 주도하는 AI 네이티브 개발 조직 랜딩 페이지. Workflow와 Team 섹션으로 구성된 한국어 사이트.",
+    "url": "https://superworktf.github.io/Superwork_KTNasmedia/",
+    "type": "landing",
+    "techStack": ["HTML", "CSS", "JavaScript"],
+    "featured": true,
+    "status": "active"
   }
 ]
