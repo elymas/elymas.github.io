@@ -46,7 +46,7 @@
   },
   {
     "name": "Superwork 원페이지",
-    "description": "SUPERWORK 원페이지 3D 프로모션 사이트. 아이디어톤, Superwork Workflow, 출시 앱 7종을 인터랙티브 3D 씬으로 소개하는 한국어 랜딩 페이지.",
+    "description": "AX전략실이 진행하는 전사 아이디어톤 \"Idea is All you need\" 소개 페이지. 행사 개요와 Superwork Workflow, 출시 앱 7종을 인터랙티브 3D 씬으로 소개하는 한국어 랜딩 페이지.",
     "url": "https://elymas.github.io/superwork-onepage/",
     "type": "landing",
     "techStack": ["React", "Three.js", "TypeScript"],
