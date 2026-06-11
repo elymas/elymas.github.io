@@ -3,8 +3,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Page Not Found - float on">
-  <section class="flex flex-1 flex-col items-center justify-center px-4 py-24 text-center">
-    <!-- Cloud icon matching brand motif -->
+  <section class="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-4 py-24 text-center">
+    <!-- Background orb — same depth language as hero -->
+    <div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div class="orb-a absolute top-1/3 left-1/3 w-48 h-48 rounded-full bg-paper-3/10 dark:bg-paper-3/5 blur-3xl"></div>
+    </div>
+
+    <!-- Cloud icon — ink-stamp reveal -->
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 36 24"
@@ -13,28 +18,73 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       stroke-width="1.5"
       stroke-linecap="round"
       stroke-linejoin="round"
-      class="mb-8 h-16 w-24 text-surface-400 dark:text-surface-600"
+      class="mb-8 h-16 w-24 text-surface-400 dark:text-surface-600 motion-stamp"
+      id="err-cloud"
+      style="--motion-delay: 0ms"
       aria-hidden="true"
     >
       <path d="M8 18c-2 0-3.5-1.3-3.5-3 0-1.6 1.1-2.8 2.7-3C7.2 8.2 10 6 13.5 6c2.8 0 5.2 1.7 6.1 4.2.5-.2 1-.3 1.6-.3 2.5 0 4.5 1.8 4.5 4.1 0 2.2-1.9 4-4.2 4H8z" />
       <path d="M5.5 19c2 1.2 5.5 1.8 9 .5s6.5-.2 9.5 1" opacity="0.5" />
     </svg>
 
+    <!-- 404 heading — type-set reveal -->
     <h1
-      class="font-serif mb-3 text-6xl font-semibold tracking-tight text-ink dark:text-paper sm:text-8xl"
+      class="font-serif mb-3 text-6xl font-semibold tracking-tight text-ink dark:text-paper sm:text-8xl motion-type-set"
+      id="err-heading"
+      style="--motion-delay: 120ms"
     >
       404
     </h1>
 
-    <p class="mb-10 text-lg text-surface-500 dark:text-surface-400">
+    <!-- Subtitle — paper-rise -->
+    <p
+      class="mb-10 text-lg text-surface-500 dark:text-surface-400 motion-fade-up"
+      id="err-subtitle"
+      style="--motion-delay: 230ms"
+    >
       This page floated away.
     </p>
 
+    <!-- CTA — paper-rise + ink-press -->
     <a
       href="/"
-      class="inline-flex items-center rounded-xs bg-ink px-6 py-3 text-sm font-medium uppercase tracking-wider text-paper transition-opacity hover:opacity-80 dark:bg-paper dark:text-ink"
+      class="inline-flex items-center rounded-xs bg-ink px-6 py-3 text-sm font-medium uppercase tracking-wider text-paper transition-opacity hover:opacity-80 dark:bg-paper dark:text-ink ink-press motion-fade-up"
+      id="err-cta"
+      style="--motion-delay: 320ms"
     >
       Return Home
     </a>
   </section>
 </BaseLayout>
+
+<script>
+  // @MX:NOTE: [AUTO] 404 page load sequence — same letterpress reveal as hero
+  // Stagger is driven by inline `--motion-delay` CSS custom properties set on each
+  // element in the HTML (0ms / 120ms / 230ms / 320ms). This is an intentional
+  // divergence from index.astro's setTimeout approach: on a static error page the
+  // HTML is fully available at parse time so CSS-property-driven stagger is
+  // simpler and avoids the JS timer overhead.
+  function run404Sequence() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ids = ['err-cloud', 'err-heading', 'err-subtitle', 'err-cta'];
+
+    if (prefersReducedMotion) {
+      ids.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.add('is-visible');
+        el.style.setProperty('--motion-delay', '0ms');
+      });
+      return;
+    }
+
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('is-visible');
+    });
+  }
+
+  run404Sequence();
+  document.addEventListener('astro:after-swap', run404Sequence);
+</script>

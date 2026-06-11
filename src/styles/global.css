@@ -70,3 +70,332 @@
     font-family: var(--font-sans);
   }
 }
+
+/* ==========================================================================
+   PRINTING PRESS MOTION SYSTEM — Dimensional Motion Layer
+   Design language: ink-stamp reveals, paper-layer depth, typographic motion.
+   All motion is transform/opacity only (zero CLS).
+   prefers-reduced-motion: reduce disables every added animation globally.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Keyframes — letterpress / editorial motion vocabulary
+   -------------------------------------------------------------------------- */
+
+/* Ink-stamp reveal: scale from slightly reduced + fade in, settling to rest */
+@keyframes ink-stamp {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Paper-rise: element lifts in from below, as a sheet fed into a press */
+@keyframes paper-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Type-set: slight horizontal slide-in as if typeset character by character */
+@keyframes type-set {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Orb drift: subtle floating drift for background orbs — loop */
+@keyframes orb-drift-a {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  33%       { transform: translateY(-12px) translateX(6px); }
+  66%       { transform: translateY(6px) translateX(-8px); }
+}
+
+@keyframes orb-drift-b {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  40%       { transform: translateY(10px) translateX(-6px); }
+  70%       { transform: translateY(-6px) translateX(8px); }
+}
+
+/* --------------------------------------------------------------------------
+   Entrance classes — load-triggered (hero sequence) and scroll-triggered.
+   Hidden states are gated behind .js-motion (added by BaseLayout inline script
+   before first paint). Without JS the class is never added, so all elements
+   remain visible — no invisible LCP elements in no-JS environments.
+   -------------------------------------------------------------------------- */
+
+/* Base state for entrance-animated elements (before trigger) — JS only */
+.js-motion .motion-fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.js-motion .motion-stamp {
+  opacity: 0;
+  transform: scale(0.94) translateY(4px);
+}
+
+.js-motion .motion-type-set {
+  opacity: 0;
+  transform: translateX(-6px);
+}
+
+/* card-entrance shares motion-fade-up hidden state */
+.js-motion .card-entrance {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Triggered state — applied by IntersectionObserver or page-load sequence */
+.motion-fade-up.is-visible {
+  animation: paper-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.motion-stamp.is-visible {
+  animation: ink-stamp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.motion-type-set.is-visible {
+  animation: type-set 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Staggered delay via custom property — JS sets --motion-delay on each element */
+.motion-fade-up.is-visible,
+.motion-stamp.is-visible,
+.motion-type-set.is-visible {
+  animation-delay: var(--motion-delay, 0ms);
+}
+
+/* --------------------------------------------------------------------------
+   Hero parallax layers — paper depth planes
+   JS updates --parallax-back / --parallax-mid (scroll) via setProperty.
+   JS updates --parallax-pointer-x (pointer) via setProperty — never via
+   style.transform, so scroll parallax is never overridden.
+   -------------------------------------------------------------------------- */
+
+.hero-layer-back {
+  will-change: transform;
+  transform:
+    translateY(var(--parallax-back, 0px))
+    translateX(var(--parallax-pointer-x, 0px));
+}
+
+.hero-layer-mid {
+  will-change: transform;
+  transform:
+    translateY(var(--parallax-mid, 0px))
+    translateX(var(--parallax-mid-pointer-x, 0px));
+}
+
+/* Background orb ambient animation */
+.orb-a {
+  animation: orb-drift-a 14s ease-in-out infinite;
+}
+
+.orb-b {
+  animation: orb-drift-b 18s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   3D card tilt — pointer-reactive letterpress depth
+   JS sets --tilt-x, --tilt-y, --tilt-z on the card wrapper.
+   The card inner lifts in Z; shadow stays paper-toned.
+   -------------------------------------------------------------------------- */
+
+.card-tilt-wrapper {
+  perspective: 800px;
+  transform-style: preserve-3d;
+}
+
+.card-tilt-inner {
+  transform:
+    rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg))
+    translateZ(var(--tilt-z, 0px));
+  transition:
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* Restrained paper-tone depth shadow — only appears on tilt/hover */
+.card-tilt-inner:where(:hover, [data-tilting]) {
+  box-shadow:
+    0 8px 24px -4px rgba(27, 24, 22, 0.12),
+    0 2px 6px -1px rgba(27, 24, 22, 0.08);
+}
+
+/* Dark mode: shadow stays ink-toned */
+.dark .card-tilt-inner:where(:hover, [data-tilting]) {
+  box-shadow:
+    0 8px 24px -4px rgba(3, 2, 2, 0.45),
+    0 2px 6px -1px rgba(3, 2, 2, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   Letterpress hover micro-interactions
+   -------------------------------------------------------------------------- */
+
+/* Ink-press: subtle downward press on interactive elements */
+.ink-press {
+  transition: transform 0.1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.1s ease;
+}
+
+.ink-press:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* Nav link underline — editorial typeface dot/line reveal */
+.nav-link-press {
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.nav-link-press::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link-press:hover::after {
+  width: 100%;
+}
+
+/* CTA chevron nudge — subtle press chevron movement */
+.cta-chevron {
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+a:hover .cta-chevron {
+  transform: translateY(2px);
+}
+
+/* --------------------------------------------------------------------------
+   View Transitions — paper-turn page transition
+   @supports guard: only applies in browsers with View Transitions API.
+   -------------------------------------------------------------------------- */
+
+@supports (view-transition-name: none) {
+  ::view-transition-old(root) {
+    animation: 0.3s ease-in both fade-out-vt;
+  }
+
+  ::view-transition-new(root) {
+    animation: 0.35s ease-out both fade-in-vt;
+  }
+
+  @keyframes fade-out-vt {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-8px); }
+  }
+
+  @keyframes fade-in-vt {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Scroll-driven entrances — @supports guard for native scroll timeline.
+   For browsers without scroll-timeline, IntersectionObserver in JS handles
+   the .is-visible class toggle (see pages/index.astro script).
+   -------------------------------------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+  .scroll-entrance {
+    animation: paper-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 25%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   MASTER REDUCED-MOTION KILL SWITCH
+   This block MUST remain last so it overrides all motion above.
+   Under prefers-reduced-motion: reduce, every element renders in its
+   final resting state immediately — no animation, no transition delay.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Kill all keyframe animations */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  /* Ensure entrance elements render in final state immediately */
+  /* Covers both .js-motion-gated and any non-gated fallback selectors */
+  .motion-fade-up,
+  .motion-stamp,
+  .motion-type-set,
+  .card-entrance,
+  .js-motion .motion-fade-up,
+  .js-motion .motion-stamp,
+  .js-motion .motion-type-set,
+  .js-motion .card-entrance {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Kill orb drifting */
+  .orb-a,
+  .orb-b {
+    animation: none !important;
+  }
+
+  /* Kill parallax layer transforms */
+  .hero-layer-back,
+  .hero-layer-mid {
+    transform: none !important;
+  }
+
+  /* Kill 3D tilt — return to flat */
+  .card-tilt-inner {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* Kill nav underline animation */
+  .nav-link-press::after {
+    transition: none !important;
+  }
+
+  /* Kill CTA chevron nudge */
+  .cta-chevron {
+    transition: none !important;
+  }
+
+  /* Kill ink-press active state */
+  .ink-press:active {
+    transform: none !important;
+  }
+
+  /* Kill scroll-driven entrance animations */
+  .scroll-entrance {
+    animation: none !important;
+  }
+}

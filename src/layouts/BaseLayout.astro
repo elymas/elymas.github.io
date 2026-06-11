@@ -59,12 +59,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="theme-color" content="#1b1816" media="(prefers-color-scheme: dark)" />
 
     <!-- FOUC Prevention: apply theme before paint -->
+    <!-- Motion gate: add js-motion before paint so CSS hidden states only apply when JS runs -->
     <script is:inline>
       (function () {
         const theme =
           localStorage.getItem('theme') ||
           (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         document.documentElement.classList.toggle('dark', theme === 'dark');
+        document.documentElement.classList.add('js-motion');
       })();
     </script>
     <ClientRouter />

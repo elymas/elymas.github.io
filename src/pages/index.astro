@@ -7,44 +7,86 @@ const projects = getAllProjects();
 ---
 
 <BaseLayout title="float on - elymas.github.io">
-  <!-- Hero Section -->
-  <section class="relative overflow-hidden bg-paper dark:bg-ink">
+  <!-- Hero Section — layered parallax depth, load-sequence entrance -->
+  <section class="relative overflow-hidden bg-paper dark:bg-ink" id="hero-section">
+    <!-- Background orbs — z-plane: back layer (slowest parallax) -->
+    <div class="absolute inset-0 -z-10 overflow-hidden hero-layer-back" aria-hidden="true">
+      <div class="orb-a absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-paper-3/10 dark:bg-paper-3/5 blur-3xl"></div>
+      <div class="orb-b absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-paper-3/10 dark:bg-paper-3/5 blur-3xl"></div>
+    </div>
+
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
-      <div class="text-center">
-        <!-- Cloud decoration -->
-        <div class="flex justify-center mb-8">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="w-24 h-16 text-surface-400 dark:text-surface-300" aria-hidden="true">
+      <div class="text-center hero-layer-mid">
+        <!-- Cloud mark — ink-stamp reveal (step 1 in sequence) -->
+        <div class="flex justify-center mb-8 motion-stamp" id="hero-cloud" style="--motion-delay: 0ms">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 80 50"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-24 h-16 text-surface-400 dark:text-surface-300"
+            aria-hidden="true"
+          >
             <path d="M18 38c-4 0-7-2.6-7-6 0-3.2 2.2-5.6 5.4-6C16.4 18.4 22 14 28.5 14c5.6 0 10.4 3.4 12.2 8.4 1-.4 2-.6 3.2-.6 5 0 9 3.6 9 8.2 0 4.4-3.8 8-8.4 8H18z" />
             <path d="M11 40c4 2.4 11 3.6 18 1 7-2.6 13-.4 19 2" opacity="0.4" />
           </svg>
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif tracking-tight text-ink dark:text-paper">
+
+        <!-- H1 — type-set reveal (step 2 in sequence) -->
+        <h1
+          class="text-4xl sm:text-5xl lg:text-6xl font-serif tracking-tight text-ink dark:text-paper motion-type-set"
+          id="hero-h1"
+          style="--motion-delay: 120ms"
+        >
           Archive for floating thoughts.
         </h1>
-        <p class="text-lg text-surface-500 dark:text-surface-400 mt-4 max-w-xl mx-auto">
+
+        <!-- Subtitle — paper-rise (step 3) -->
+        <p
+          class="text-lg text-surface-500 dark:text-surface-400 mt-4 max-w-xl mx-auto motion-fade-up"
+          id="hero-subtitle"
+          style="--motion-delay: 240ms"
+        >
           A central hub for projects, blogs, and experiments hosted on GitHub Pages.
         </p>
-        <a href="#projects" class="inline-flex items-center gap-1.5 mt-8 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+
+        <!-- CTA — paper-rise with chevron nudge (step 4) -->
+        <a
+          href="#projects"
+          class="inline-flex items-center gap-1.5 mt-8 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors ink-press motion-fade-up"
+          id="hero-cta"
+          style="--motion-delay: 360ms"
+        >
           Browse projects
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            class="cta-chevron"
+          >
             <path d="m6 9 6 6 6-6"/>
           </svg>
         </a>
       </div>
     </div>
-    <!-- Decorative cloud pattern background -->
-    <div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
-      <div class="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-paper-3/10 dark:bg-paper-3/5 blur-3xl"></div>
-      <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-paper-3/10 dark:bg-paper-3/5 blur-3xl"></div>
-    </div>
   </section>
 
-  <!-- Divider -->
-  <div class="border-b border-paper-2 dark:border-surface-800"></div>
+  <!-- Divider — entrance on scroll -->
+  <div class="border-b border-paper-2 dark:border-surface-800 motion-fade-up scroll-entrance" id="section-divider"></div>
 
-  <!-- Projects Section -->
+  <!-- Projects Section — entrance choreography -->
   <section id="projects" class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-20">
-    <div class="mb-10">
+    <div class="mb-10 motion-fade-up" id="projects-heading">
       <h2 class="text-2xl sm:text-3xl font-serif text-ink dark:text-paper">
         Projects
       </h2>
@@ -55,3 +97,166 @@ const projects = getAllProjects();
     <ProjectGrid projects={projects} />
   </section>
 </BaseLayout>
+
+<script>
+  // @MX:NOTE: [AUTO] Hero load-sequence + scroll-entrance + parallax + pointer tilt orchestration
+  // Zero dependencies — vanilla JS only. All motion respects prefers-reduced-motion.
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // -------------------------------------------------------------------------
+  // 1. Hero page-load sequence — staggered ink-stamp / type-set / paper-rise
+  // -------------------------------------------------------------------------
+  function runHeroSequence() {
+    if (prefersReducedMotion) {
+      // Under reduced-motion: render all in final state immediately
+      document.querySelectorAll<HTMLElement>(
+        '#hero-cloud, #hero-h1, #hero-subtitle, #hero-cta'
+      ).forEach((el) => {
+        el.classList.add('is-visible');
+        el.style.setProperty('--motion-delay', '0ms');
+      });
+      return;
+    }
+
+    const steps = [
+      { id: 'hero-cloud',    delay: 0   },
+      { id: 'hero-h1',       delay: 120 },
+      { id: 'hero-subtitle', delay: 240 },
+      { id: 'hero-cta',      delay: 360 },
+    ];
+
+    steps.forEach(({ id, delay }) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      setTimeout(() => el.classList.add('is-visible'), delay);
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // 2. Scroll-entrance — IntersectionObserver fallback for non-scroll-timeline
+  //    browsers. Also drives the Projects heading.
+  //    F-3 fix: skip .scroll-entrance elements when native CSS scroll-timeline
+  //    is supported — the @supports block in global.css handles them directly,
+  //    and double-driving via IO would create redundant/conflicting animation.
+  // -------------------------------------------------------------------------
+  const hasNativeScrollTimeline = CSS.supports('animation-timeline', 'view()');
+
+  function initScrollEntrances() {
+    if (prefersReducedMotion) return;
+
+    // #projects-heading: always driven by IO (no .scroll-entrance class).
+    // #section-divider: has .scroll-entrance — skip if native timeline available.
+    const targets: HTMLElement[] = [];
+
+    const heading = document.getElementById('projects-heading');
+    if (heading) targets.push(heading);
+
+    // Only observe the divider with IO when scroll-timeline is NOT natively supported
+    if (!hasNativeScrollTimeline) {
+      const divider = document.getElementById('section-divider');
+      if (divider) targets.push(divider);
+    }
+
+    if (targets.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    targets.forEach((el) => observer.observe(el));
+  }
+
+  // -------------------------------------------------------------------------
+  // 3. Hero parallax — scroll drives --parallax-back / --parallax-mid
+  // -------------------------------------------------------------------------
+  function initHeroParallax() {
+    if (prefersReducedMotion) return;
+
+    const heroSection = document.getElementById('hero-section');
+    const layerBack = heroSection?.querySelector<HTMLElement>('.hero-layer-back');
+    const layerMid = heroSection?.querySelector<HTMLElement>('.hero-layer-mid');
+    if (!heroSection || !layerBack || !layerMid) return;
+
+    let ticking = false;
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        // Back layer (orbs) moves at 0.3× scroll speed → slower = deeper
+        layerBack!.style.setProperty('--parallax-back', `${scrollY * 0.3}px`);
+        // Mid layer (text content) moves at 0.12× — subtle depth
+        layerMid!.style.setProperty('--parallax-mid', `${scrollY * 0.12}px`);
+        ticking = false;
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  // -------------------------------------------------------------------------
+  // 4. Pointer-driven hero parallax (desktop only, complementary to scroll)
+  // -------------------------------------------------------------------------
+  function initHeroPointerParallax() {
+    if (prefersReducedMotion) return;
+    // Disabled on touch-primary devices
+    if (window.matchMedia('(hover: none)').matches) return;
+
+    const heroSection = document.getElementById('hero-section');
+    const layerBack = heroSection?.querySelector<HTMLElement>('.hero-layer-back');
+    const layerMid = heroSection?.querySelector<HTMLElement>('.hero-layer-mid');
+    if (!heroSection || !layerBack || !layerMid) return;
+
+    let pointerTicking = false;
+
+    function onPointerMove(e: PointerEvent) {
+      if (pointerTicking) return;
+      pointerTicking = true;
+      requestAnimationFrame(() => {
+        const rect = heroSection!.getBoundingClientRect();
+        if (rect.height === 0) { pointerTicking = false; return; }
+        // Normalized -0.5 → 0.5 (horizontal axis only for pointer parallax)
+        const nx = (e.clientX - rect.left) / rect.width - 0.5;
+
+        // CSS class rules compose scroll + pointer via CSS custom properties —
+        // never touch style.transform here so scroll parallax is never overridden.
+        layerBack!.style.setProperty('--parallax-pointer-x', `${nx * -18}px`);
+        layerMid!.style.setProperty('--parallax-mid-pointer-x', `${nx * -6}px`);
+        pointerTicking = false;
+      });
+    }
+
+    function onPointerLeave() {
+      // Reset pointer custom properties — CSS class rules restore scroll-only state
+      layerBack!.style.setProperty('--parallax-pointer-x', '0px');
+      layerMid!.style.setProperty('--parallax-mid-pointer-x', '0px');
+    }
+
+    heroSection.addEventListener('pointermove', onPointerMove, { passive: true });
+    heroSection.addEventListener('pointerleave', onPointerLeave, { passive: true });
+  }
+
+  // -------------------------------------------------------------------------
+  // Boot
+  // -------------------------------------------------------------------------
+  function boot() {
+    runHeroSequence();
+    initScrollEntrances();
+    initHeroParallax();
+    initHeroPointerParallax();
+  }
+
+  boot();
+  // Re-run on Astro View Transitions
+  document.addEventListener('astro:after-swap', boot);
+</script>

@@ -9,8 +9,45 @@ interface Props {
 const { projects } = Astro.props;
 ---
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-  {projects.map((project) => (
-    <ProjectCard project={project} />
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="project-grid">
+  {projects.map((project, index) => (
+    <ProjectCard project={project} index={index} />
   ))}
 </div>
+
+<script>
+  // @MX:NOTE: [AUTO] Staggered scroll-entrance for project cards via IntersectionObserver
+  function initCardEntrances() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const grid = document.getElementById('project-grid');
+    if (!grid) return;
+
+    const cards = grid.querySelectorAll<HTMLElement>('.card-entrance');
+
+    if (prefersReducedMotion) {
+      // Render all cards in final state immediately
+      cards.forEach((card) => {
+        card.classList.add('is-visible');
+        card.style.setProperty('--motion-delay', '0ms');
+      });
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    cards.forEach((card) => observer.observe(card));
+  }
+
+  initCardEntrances();
+  document.addEventListener('astro:after-swap', initCardEntrances);
+</script>
