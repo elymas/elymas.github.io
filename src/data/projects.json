@@ -52,5 +52,14 @@
     "techStack": ["React", "Three.js", "TypeScript"],
     "featured": true,
     "status": "active"
+  },
+  {
+    "name": "SIGNAL NOTE RESEARCH",
+    "description": "공개 릴스와 YouTube 영상을 출처별로 정리하고, 영상의 주장·실행 규칙·검증 한계를 분리해 탐색할 수 있는 영상 리서치 아카이브.",
+    "url": "https://elymas.github.io/signal-note/",
+    "type": "app",
+    "techStack": ["React", "Vite", "JavaScript"],
+    "featured": true,
+    "status": "active"
   }
 ]
