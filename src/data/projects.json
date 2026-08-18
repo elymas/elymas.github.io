@@ -1,5 +1,14 @@
 [
   {
+    "name": "TERMS — Five Cases",
+    "description": "이름 하나에는 싸게, 범주 전체에는 비싸게 계약하고 조항을 감수하며 규칙을 철회하는 5개 Case 브라우저 공간 퍼즐.",
+    "url": "https://elymas.github.io/terms/",
+    "type": "app",
+    "techStack": ["HTML5", "Vanilla JavaScript", "GitHub Pages"],
+    "featured": true,
+    "status": "active"
+  },
+  {
     "name": "Claude Usage Dashboard",
     "description": "Claude Code token usage dashboard for teams. Collects daily usage from local JSONL logs via Collector, stores in Supabase, and visualizes team-wide metrics with charts, tables, and CSV export.",
     "url": "https://github.com/elymas/claude-usage-dashboard",
