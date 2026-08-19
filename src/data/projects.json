@@ -42,7 +42,7 @@
     "type": "blog",
     "techStack": ["Astro", "MDX", "Tailwind CSS"],
     "featured": false,
-    "status": "coming-soon"
+    "status": "active"
   },
   {
     "name": "Superwork — AI 네이티브 개발 조직",
