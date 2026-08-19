@@ -1,4 +1,4 @@
-export type ProjectType = 'blog' | 'docs' | 'landing' | 'app' | 'tutorial' | 'portfolio';
+export type ProjectType = 'blog' | 'docs' | 'landing' | 'app' | 'game' | 'tutorial' | 'portfolio';
 
 export type ProjectStatus = 'active' | 'coming-soon' | 'archived';
 

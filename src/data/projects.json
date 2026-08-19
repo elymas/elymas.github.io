@@ -3,7 +3,7 @@
     "name": "TERMS — Five Cases",
     "description": "이름 하나에는 싸게, 범주 전체에는 비싸게 계약하고 조항을 감수하며 규칙을 철회하는 5개 Case 브라우저 공간 퍼즐.",
     "url": "https://elymas.github.io/terms/",
-    "type": "app",
+    "type": "game",
     "techStack": ["HTML5", "Vanilla JavaScript", "GitHub Pages"],
     "featured": true,
     "status": "active"
@@ -38,7 +38,7 @@
   {
     "name": "Tech Blog",
     "description": "A personal tech blog covering web development, cloud architecture, and developer tooling. Written with practical examples and deep-dive tutorials.",
-    "url": "https://elymas.github.io/blog",
+    "url": "https://floaton.cloud",
     "type": "blog",
     "techStack": ["Astro", "MDX", "Tailwind CSS"],
     "featured": false,
