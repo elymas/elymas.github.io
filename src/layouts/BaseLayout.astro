@@ -11,7 +11,7 @@ interface Props {
 
 const {
   title,
-  description = 'float on - Archive for floating thoughts. A central hub for projects hosted on elymas.github.io',
+  description = 'float on — a personal hub of projects, experiments, and writing hosted on GitHub Pages.',
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -74,6 +74,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <body
     class="min-h-screen flex flex-col bg-surface-50 text-ink dark:bg-ink dark:text-paper transition-colors duration-200"
   >
+    <!-- Paper grain — tactile texture layer, sits above everything but never intercepts input -->
+    <div class="grain-overlay" aria-hidden="true"></div>
     <Header />
     <main class="flex-1">
       <slot />

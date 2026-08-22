@@ -1,19 +1,303 @@
 ---
 import type { Project } from '../types/project';
 import ProjectCard from './ProjectCard.astro';
+import { getTypeStats, typeIcons, allIcon } from '../utils/project-meta';
 
 interface Props {
   projects: Project[];
 }
 
 const { projects } = Astro.props;
+const typeStats = getTypeStats(projects);
 ---
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="project-grid">
+<!-- Toolbar: search + type filters — sticky while the grid scrolls -->
+<div
+  class="sticky top-16 z-30 -mx-4 sm:mx-0 px-4 sm:px-0 py-3 bg-paper/85 dark:bg-ink/85 backdrop-blur-md border-b border-paper-2/60 dark:border-surface-800/60"
+  id="projects-toolbar"
+>
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+    <!-- Search -->
+    <label class="relative flex-1 min-w-0 sm:max-w-[16rem] sm:flex-none" for="project-search">
+      <span class="sr-only">Search projects</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-3 dark:text-surface-400"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+      </svg>
+      <input
+        id="project-search"
+        type="search"
+        placeholder="Search projects…"
+        autocomplete="off"
+        spellcheck="false"
+        class="w-full rounded-full border border-paper-3 dark:border-surface-700 bg-paper dark:bg-surface-800 py-2 pl-9 pr-10 sm:pr-12 text-sm text-ink dark:text-paper placeholder:text-ink-3/80 dark:placeholder:text-surface-400 transition-colors focus:outline-none focus-visible:border-primary-500 dark:focus-visible:border-primary-400 [&::-webkit-search-cancel-button]:hidden"
+      />
+      <kbd
+        class="pointer-events-none absolute right-3.5 top-1/2 hidden -translate-y-1/2 select-none items-center rounded-xs border border-paper-3 dark:border-surface-700 bg-paper-2 dark:bg-surface-800 px-1.5 font-mono text-[11px] text-ink-3 dark:text-surface-400 sm:flex"
+        aria-hidden="true"
+      >
+        /
+      </kbd>
+    </label>
+
+    <!-- Type filter chips — horizontally scrollable on mobile -->
+    <div
+      class="flex items-center gap-2 overflow-x-auto py-0.5 no-scrollbar"
+      role="group"
+      aria-label="Filter projects by type"
+    >
+      <button
+        type="button"
+        data-filter-type="all"
+        aria-pressed="true"
+        class="filter-chip filter-chip-active"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="h-3 w-3 shrink-0"
+          aria-hidden="true"
+          set:html={allIcon}
+        />
+        All
+        <span class="font-mono text-[10px] tabular-nums opacity-70">{projects.length}</span>
+      </button>
+      {typeStats.map(({ type, meta, count }) => (
+        <button type="button" data-filter-type={type} aria-pressed="false" class="filter-chip">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-3 w-3 shrink-0"
+            aria-hidden="true"
+            set:html={typeIcons[meta.icon] ?? typeIcons.generic}
+          />
+          {meta.label}
+          <span class="font-mono text-[10px] tabular-nums opacity-70">{count}</span>
+        </button>
+      ))}
+    </div>
+
+    <!-- Result count + reset -->
+    <div class="flex items-center gap-3 sm:ml-auto shrink-0">
+      <span
+        id="project-count"
+        aria-live="polite"
+        class="font-mono text-xs tabular-nums text-ink-3 dark:text-surface-400"
+      >
+        {projects.length} / {projects.length}
+      </span>
+      <button
+        type="button"
+        data-filter-reset
+        hidden
+        class="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors nav-link-press"
+      >
+        Reset
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Grid: 1 col mobile → 2 col tablet → 3 col desktop -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-6" id="project-grid">
   {projects.map((project, index) => (
     <ProjectCard project={project} index={index} />
   ))}
 </div>
+
+<!-- Empty state — shown by JS when nothing matches -->
+<div id="projects-empty" hidden class="py-24 text-center">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 36 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="mx-auto mb-6 h-12 w-18 text-surface-400 dark:text-surface-600 opacity-60"
+    aria-hidden="true"
+  >
+    <path d="M8 18c-2 0-3.5-1.3-3.5-3 0-1.6 1.1-2.8 2.7-3C7.2 8.2 10 6 13.5 6c2.8 0 5.2 1.7 6.1 4.2.5-.2 1-.3 1.6-.3 2.5 0 4.5 1.8 4.5 4.1 0 2.2-1.9 4-4.2 4H8z" />
+    <path d="M5.5 19c2 1.2 5.5 1.8 9 .5s6.5-.2 9.5 1" opacity="0.5" />
+  </svg>
+  <p class="font-serif text-lg text-ink dark:text-paper">No projects match your filter.</p>
+  <p class="mt-1 text-sm text-ink-2 dark:text-surface-400">Try a different keyword or type.</p>
+  <button
+    type="button"
+    data-filter-reset
+    class="mt-6 inline-flex items-center rounded-xs bg-ink px-5 py-2.5 text-sm font-medium uppercase tracking-wider text-paper transition-opacity hover:opacity-80 dark:bg-paper dark:text-ink ink-press"
+  >
+    Reset filters
+  </button>
+</div>
+
+<style>
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    white-space: nowrap;
+    border-radius: 9999px;
+    border: 1px solid var(--color-paper-3, #e7dcca);
+    background: transparent;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-ink-2, #5a524a);
+    cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+  .filter-chip:hover {
+    border-color: color-mix(in srgb, var(--color-ink, #1b1816) 30%, transparent);
+  }
+  .filter-chip-active {
+    background: var(--color-ink, #1b1816);
+    border-color: var(--color-ink, #1b1816);
+    color: var(--color-paper, #f4efe6);
+  }
+  :global(.dark) .filter-chip {
+    border-color: var(--color-surface-700, #5a524a);
+    color: var(--color-surface-300, #e7dcca);
+  }
+  :global(.dark) .filter-chip:hover {
+    border-color: color-mix(in srgb, var(--color-paper, #f4efe6) 40%, transparent);
+  }
+  :global(.dark) .filter-chip-active {
+    background: var(--color-paper, #f4efe6);
+    border-color: var(--color-paper, #f4efe6);
+    color: var(--color-ink, #1b1816);
+  }
+  .filter-chip:focus-visible {
+    outline: 2px solid var(--color-primary-500, #c80027);
+    outline-offset: 2px;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  // @MX:NOTE: [AUTO] Client-side project filtering — search + type chips, no dependencies.
+  // Progressive enhancement: the server renders every card; without JS all stay visible.
+  function initProjectFilters() {
+    const grid = document.getElementById('project-grid');
+    const searchInput = document.getElementById('project-search') as HTMLInputElement | null;
+    if (!grid || !searchInput) return;
+
+    const cells = Array.from(grid.querySelectorAll<HTMLElement>('[data-type][data-search]'));
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter-type]'));
+    const countEl = document.getElementById('project-count');
+    const emptyEl = document.getElementById('projects-empty');
+    const resetButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter-reset]'));
+
+    if (cells.length === 0) return;
+
+    const state = { type: 'all', query: '' };
+
+    function isFiltered() {
+      return state.type !== 'all' || state.query.trim() !== '';
+    }
+
+    function apply() {
+      const q = state.query.trim().toLowerCase();
+      let visible = 0;
+
+      for (const cell of cells) {
+        const matchType = state.type === 'all' || cell.dataset.type === state.type;
+        const matchQuery = q === '' || (cell.dataset.search ?? '').includes(q);
+        const show = matchType && matchQuery;
+        cell.hidden = !show;
+        if (show) visible += 1;
+      }
+
+      if (countEl) countEl.textContent = `${visible} / ${cells.length}`;
+      if (emptyEl) emptyEl.hidden = visible !== 0;
+      for (const btn of resetButtons) btn.hidden = !isFiltered();
+    }
+
+    function setFilterType(type: string) {
+      state.type = type;
+      for (const chip of chips) {
+        chip.setAttribute('aria-pressed', String(chip.dataset.filterType === type));
+        chip.classList.toggle('filter-chip-active', chip.dataset.filterType === type);
+      }
+      apply();
+    }
+
+    function reset() {
+      state.query = '';
+      searchInput!.value = '';
+      setFilterType('all');
+      searchInput!.focus();
+    }
+
+    for (const chip of chips) {
+      chip.addEventListener('click', () => setFilterType(chip.dataset.filterType ?? 'all'));
+    }
+
+    let debounceTimer: number | undefined;
+    searchInput.addEventListener('input', () => {
+      window.clearTimeout(debounceTimer);
+      debounceTimer = window.setTimeout(() => {
+        state.query = searchInput.value;
+        apply();
+      }, 120);
+    });
+
+    for (const btn of resetButtons) btn.addEventListener('click', reset);
+
+    // "/" focuses search; Escape clears it
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === '/' && document.activeElement !== searchInput) {
+        const tag = (document.activeElement?.tagName ?? '').toLowerCase();
+        if (tag !== 'input' && tag !== 'textarea') {
+          e.preventDefault();
+          searchInput?.focus();
+        }
+      } else if (e.key === 'Escape' && document.activeElement === searchInput) {
+        if (searchInput.value !== '') {
+          searchInput.value = '';
+          state.query = '';
+          apply();
+        } else {
+          searchInput.blur();
+        }
+      }
+    });
+
+    apply();
+  }
+
+  initProjectFilters();
+  document.addEventListener('astro:after-swap', initProjectFilters);
+</script>
 
 <script>
   // @MX:NOTE: [AUTO] Staggered scroll-entrance for project cards via IntersectionObserver

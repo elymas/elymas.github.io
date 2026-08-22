@@ -329,6 +329,43 @@ a:hover .cta-chevron {
 }
 
 /* --------------------------------------------------------------------------
+   Paper grain — tactile texture layer (Printing Press materiality)
+   Fixed overlay rasterized once; pointer-events: none keeps it inert.
+   -------------------------------------------------------------------------- */
+
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+.dark .grain-overlay {
+  opacity: 0.05;
+}
+
+/* --------------------------------------------------------------------------
+   Editorial selection + global focus visibility
+   -------------------------------------------------------------------------- */
+
+::selection {
+  background: #c80027; /* primary-500 */
+  color: #f4efe6;      /* paper */
+}
+
+:focus-visible {
+  outline: 2px solid #c80027; /* primary-500 */
+  outline-offset: 2px;
+}
+
+.dark :focus-visible {
+  outline-color: hsl(348, 100%, 56%); /* primary-400 */
+}
+
+/* --------------------------------------------------------------------------
    MASTER REDUCED-MOTION KILL SWITCH
    This block MUST remain last so it overrides all motion above.
    Under prefers-reduced-motion: reduce, every element renders in its

@@ -28,11 +28,11 @@ import ThemeToggle from './ThemeToggle.astro';
         <span class="font-serif tracking-tight">float on</span>
       </a>
 
-      <nav class="flex items-center gap-6" aria-label="Main navigation">
-        <!-- Nav links with editorial underline reveal -->
+      <nav class="flex items-center gap-1 sm:gap-4" aria-label="Main navigation">
+        <!-- Nav links — editorial underline reveal, 44px touch targets -->
         <a
           href="/#projects"
-          class="nav-link-press text-xs sm:text-sm text-surface-600 dark:text-surface-300 hover:text-ink dark:hover:text-paper transition-colors"
+          class="nav-link-press inline-flex min-h-11 items-center px-2 text-xs sm:text-sm text-ink-2 dark:text-surface-300 hover:text-ink dark:hover:text-paper transition-colors"
         >
           Projects
         </a>
@@ -40,13 +40,13 @@ import ThemeToggle from './ThemeToggle.astro';
           href="https://github.com/elymas"
           target="_blank"
           rel="noopener noreferrer"
-          class="nav-link-press text-xs sm:text-sm text-surface-600 dark:text-surface-300 hover:text-ink dark:hover:text-paper transition-colors"
+          class="nav-link-press inline-flex min-h-11 items-center px-2 text-xs sm:text-sm text-ink-2 dark:text-surface-300 hover:text-ink dark:hover:text-paper transition-colors"
           aria-label="GitHub Profile"
         >
           GitHub
         </a>
         <!-- Theme toggle with ink-press wrapper -->
-        <span class="ink-press">
+        <span class="inline-flex items-center ink-press">
           <ThemeToggle />
         </span>
       </nav>

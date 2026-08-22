@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
-import { getAllProjects } from '../utils/projects';
+import { getAllProjects, sortProjects } from '../utils/projects';
 
-const projects = getAllProjects();
+const projects = sortProjects(getAllProjects());
+const featuredCount = projects.filter((p) => p.featured).length;
 ---
 
 <BaseLayout title="float on - elymas.github.io">
@@ -37,7 +38,7 @@ const projects = getAllProjects();
 
         <!-- H1 — type-set reveal (step 2 in sequence) -->
         <h1
-          class="text-4xl sm:text-5xl lg:text-6xl font-serif tracking-tight text-ink dark:text-paper motion-type-set"
+          class="text-4xl sm:text-5xl lg:text-6xl font-serif tracking-tight text-ink dark:text-paper motion-type-set text-balance"
           id="hero-h1"
           style="--motion-delay: 120ms"
         >
@@ -46,7 +47,7 @@ const projects = getAllProjects();
 
         <!-- Subtitle — paper-rise (step 3) -->
         <p
-          class="text-lg text-surface-500 dark:text-surface-400 mt-4 max-w-xl mx-auto motion-fade-up"
+          class="text-lg text-ink-2 dark:text-surface-400 mt-4 max-w-xl mx-auto motion-fade-up text-balance"
           id="hero-subtitle"
           style="--motion-delay: 240ms"
         >
@@ -56,7 +57,7 @@ const projects = getAllProjects();
         <!-- CTA — paper-rise with chevron nudge (step 4) -->
         <a
           href="#projects"
-          class="inline-flex items-center gap-1.5 mt-8 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors ink-press motion-fade-up"
+          class="inline-flex items-center gap-1.5 mt-8 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors ink-press motion-fade-up"
           id="hero-cta"
           style="--motion-delay: 360ms"
         >
@@ -77,6 +78,15 @@ const projects = getAllProjects();
             <path d="m6 9 6 6 6-6"/>
           </svg>
         </a>
+
+        <!-- Meta line — data-driven hub stats (step 5) -->
+        <p
+          class="mt-12 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-2/80 dark:text-surface-400 motion-fade-up"
+          id="hero-meta"
+          style="--motion-delay: 480ms"
+        >
+          {projects.length} projects · {featuredCount} featured · elymas.github.io
+        </p>
       </div>
     </div>
   </section>
@@ -85,13 +95,13 @@ const projects = getAllProjects();
   <div class="border-b border-paper-2 dark:border-surface-800 motion-fade-up scroll-entrance" id="section-divider"></div>
 
   <!-- Projects Section — entrance choreography -->
-  <section id="projects" class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-20">
-    <div class="mb-10 motion-fade-up" id="projects-heading">
-      <h2 class="text-2xl sm:text-3xl font-serif text-ink dark:text-paper">
+  <section id="projects" class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-20 scroll-mt-16">
+    <div class="mb-6 motion-fade-up" id="projects-heading">
+      <h2 class="text-2xl sm:text-3xl font-serif text-ink dark:text-paper text-balance">
         Projects
       </h2>
-      <p class="mt-2 text-surface-500 dark:text-surface-400">
-        Browse the collection of sites and applications.
+      <p class="mt-2 text-ink-2 dark:text-surface-400">
+        Browse the collection of sites and applications — filter by type or search by keyword.
       </p>
     </div>
     <ProjectGrid projects={projects} />
@@ -111,7 +121,7 @@ const projects = getAllProjects();
     if (prefersReducedMotion) {
       // Under reduced-motion: render all in final state immediately
       document.querySelectorAll<HTMLElement>(
-        '#hero-cloud, #hero-h1, #hero-subtitle, #hero-cta'
+        '#hero-cloud, #hero-h1, #hero-subtitle, #hero-cta, #hero-meta'
       ).forEach((el) => {
         el.classList.add('is-visible');
         el.style.setProperty('--motion-delay', '0ms');
@@ -124,6 +134,7 @@ const projects = getAllProjects();
       { id: 'hero-h1',       delay: 120 },
       { id: 'hero-subtitle', delay: 240 },
       { id: 'hero-cta',      delay: 360 },
+      { id: 'hero-meta',     delay: 480 },
     ];
 
     steps.forEach(({ id, delay }) => {
