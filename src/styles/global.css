@@ -45,6 +45,12 @@
   --color-ink: #1b1816;
   --color-ink-2: #5a524a;
   --color-ink-3: #9a8f82;
+  /* Accessible light-mode tones. ink-3 (#9a8f82) reads at 2.8:1 on paper and
+     2.2:1 once faded, so it failed AA everywhere it carried text. These two
+     replace it for content: -muted clears 4.5:1 for small text on both page
+     grounds, -quiet clears the 3:1 non-text bar for icons and line marks. */
+  --color-ink-muted: #746a60;
+  --color-ink-quiet: #8d8377;
   --color-accent: #e5006d;
 
   /* Success/green — Printing Press accent */
