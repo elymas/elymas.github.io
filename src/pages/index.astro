@@ -1,19 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
-import { getAllProjects, sortProjects } from '../utils/projects';
+import { getAllProjects } from '../utils/projects';
 
-const projects = sortProjects(getAllProjects());
-const featuredCount = projects.filter((p) => p.featured).length;
+// File order is the grid order — newest first by convention (see README).
+const projects = getAllProjects();
 ---
 
 <BaseLayout title="float on - elymas.github.io">
   <!-- Hero Section — layered parallax depth, load-sequence entrance -->
   <section class="relative overflow-hidden bg-paper dark:bg-ink" id="hero-section">
-    <!-- Background orbs — z-plane: back layer (slowest parallax) -->
+    <!-- Background orbs — z-plane: back layer. Moved only by scroll and pointer;
+         they carry no animation of their own. -->
     <div class="absolute inset-0 -z-10 overflow-hidden hero-layer-back" aria-hidden="true">
-      <div class="orb-a absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-paper-3/30 dark:bg-paper-3/10 blur-3xl"></div>
-      <div class="orb-b absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-paper-3/30 dark:bg-paper-3/10 blur-3xl"></div>
+      <div class="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-paper-3/30 dark:bg-paper-3/10 blur-3xl"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-paper-3/30 dark:bg-paper-3/10 blur-3xl"></div>
     </div>
 
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
@@ -36,11 +37,13 @@ const featuredCount = projects.filter((p) => p.featured).length;
           </svg>
         </div>
 
-        <!-- H1 — type-set reveal (step 2 in sequence) -->
+        <!-- H1 — NOT animated. This is the LCP element: gating it behind
+             .js-motion meant it painted at opacity 0 until the module script
+             ran, then took another 0.4s to arrive. The hero now has a fixed
+             anchor and everything else settles around it. -->
         <h1
-          class="text-4xl sm:text-5xl lg:text-6xl font-serif tracking-tight text-ink dark:text-paper motion-type-set text-balance"
+          class="text-4xl sm:text-5xl lg:text-6xl font-serif text-ink dark:text-paper text-balance"
           id="hero-h1"
-          style="--motion-delay: 60ms"
         >
           Archive for floating thoughts.
         </h1>
@@ -49,7 +52,7 @@ const featuredCount = projects.filter((p) => p.featured).length;
         <p
           class="text-lg text-ink-2 dark:text-surface-400 mt-4 max-w-xl mx-auto motion-fade-up text-balance"
           id="hero-subtitle"
-          style="--motion-delay: 120ms"
+          style="--motion-delay: 60ms"
         >
           A central hub for projects, blogs, and experiments hosted on GitHub Pages.
         </p>
@@ -57,9 +60,9 @@ const featuredCount = projects.filter((p) => p.featured).length;
         <!-- CTA — paper-rise with chevron nudge (step 4) -->
         <a
           href="#projects"
-          class="inline-flex items-center gap-1.5 mt-8 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors ink-press motion-fade-up"
+          class="tap-slop inline-flex items-center gap-1.5 mt-8 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors ink-press motion-fade-up"
           id="hero-cta"
-          style="--motion-delay: 180ms"
+          style="--motion-delay: 120ms; --tap-slop: -12px"
         >
           Browse projects
           <svg
@@ -83,9 +86,9 @@ const featuredCount = projects.filter((p) => p.featured).length;
         <p
           class="mt-12 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-2 dark:text-surface-400 motion-fade-up"
           id="hero-meta"
-          style="--motion-delay: 240ms"
+          style="--motion-delay: 180ms"
         >
-          {projects.length} projects · {featuredCount} featured · elymas.github.io
+          {projects.length} projects · elymas.github.io
         </p>
       </div>
     </div>
@@ -112,7 +115,19 @@ const featuredCount = projects.filter((p) => p.featured).length;
   // @MX:NOTE: [AUTO] Hero load-sequence + scroll-entrance + parallax + pointer tilt orchestration
   // Zero dependencies — vanilla JS only. All motion respects prefers-reduced-motion.
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Live, not a snapshot. Read once at module scope, a mid-session change to the
+  // system setting never reached any of the guards below — the one place where
+  // the reader's answer arrives after the page has already decided.
+  const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let prefersReducedMotion = motionQuery.matches;
+
+  // Teardown handle. boot() re-runs on every View Transition swap, and the
+  // window/document listeners it registers outlive the swapped-out DOM —
+  // measured at +1 window scroll listener per navigation, each one running a
+  // requestAnimationFrame on every scroll frame forever. Every listener below
+  // takes this signal; boot() aborts the previous one before registering again.
+  let teardown: AbortController | null = null;
+  let scrollObserver: IntersectionObserver | null = null;
 
   // -------------------------------------------------------------------------
   // 1. Hero page-load sequence — staggered ink-stamp / type-set / paper-rise
@@ -121,7 +136,7 @@ const featuredCount = projects.filter((p) => p.featured).length;
     if (prefersReducedMotion) {
       // Under reduced-motion: render all in final state immediately
       document.querySelectorAll<HTMLElement>(
-        '#hero-cloud, #hero-h1, #hero-subtitle, #hero-cta, #hero-meta'
+        '#hero-cloud, #hero-subtitle, #hero-cta, #hero-meta'
       ).forEach((el) => {
         el.classList.add('is-visible');
         el.style.setProperty('--motion-delay', '0ms');
@@ -129,14 +144,13 @@ const featuredCount = projects.filter((p) => p.featured).length;
       return;
     }
 
-    // 60ms steps, 0.4s animation: the hero settles at ~640ms. The previous
-    // 120ms steps at 0.55s took past a second, which reads as waiting.
+    // 60ms steps, 0.4s animation. The H1 is not in this list — it is present
+    // from first paint — so the sequence settles at ~580ms around fixed type.
     const steps = [
       { id: 'hero-cloud',    delay: 0   },
-      { id: 'hero-h1',       delay: 60  },
-      { id: 'hero-subtitle', delay: 120 },
-      { id: 'hero-cta',      delay: 180 },
-      { id: 'hero-meta',     delay: 240 },
+      { id: 'hero-subtitle', delay: 60  },
+      { id: 'hero-cta',      delay: 120 },
+      { id: 'hero-meta',     delay: 180 },
     ];
 
     steps.forEach(({ id, delay }) => {
@@ -173,6 +187,7 @@ const featuredCount = projects.filter((p) => p.featured).length;
 
     if (targets.length === 0) return;
 
+    scrollObserver?.disconnect();
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -184,6 +199,7 @@ const featuredCount = projects.filter((p) => p.featured).length;
       },
       { threshold: 0.1 }
     );
+    scrollObserver = observer;
 
     targets.forEach((el) => observer.observe(el));
   }
@@ -213,7 +229,7 @@ const featuredCount = projects.filter((p) => p.featured).length;
       });
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true, signal: teardown!.signal });
   }
 
   // -------------------------------------------------------------------------
@@ -252,14 +268,16 @@ const featuredCount = projects.filter((p) => p.featured).length;
       layerBack!.style.setProperty('--parallax-pointer-x', '0px');
     }
 
-    heroSection.addEventListener('pointermove', onPointerMove, { passive: true });
-    heroSection.addEventListener('pointerleave', onPointerLeave, { passive: true });
+    heroSection.addEventListener('pointermove', onPointerMove, { passive: true, signal: teardown!.signal });
+    heroSection.addEventListener('pointerleave', onPointerLeave, { passive: true, signal: teardown!.signal });
   }
 
   // -------------------------------------------------------------------------
   // Boot
   // -------------------------------------------------------------------------
   function boot() {
+    teardown?.abort();
+    teardown = new AbortController();
     runHeroSequence();
     initScrollEntrances();
     initHeroParallax();
@@ -269,4 +287,10 @@ const featuredCount = projects.filter((p) => p.featured).length;
   boot();
   // Re-run on Astro View Transitions
   document.addEventListener('astro:after-swap', boot);
+  // ...and when the reader changes the setting mid-session. boot() aborts its
+  // previous registrations first, so re-running is the whole reconfiguration.
+  motionQuery.addEventListener('change', () => {
+    prefersReducedMotion = motionQuery.matches;
+    boot();
+  });
 </script>

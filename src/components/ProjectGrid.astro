@@ -12,8 +12,12 @@ const typeStats = getTypeStats(projects);
 ---
 
 <!-- Toolbar: search + type filters — sticky while the grid scrolls -->
+<!-- Opaque, deliberately. This sits directly under the translucent header, and
+     two stacked blurred surfaces is the one material combination that never
+     works — the lower one reads as dirt on the upper. The header keeps the
+     translucency; this bar takes the page's own tone and a scroll edge. -->
 <div
-  class="sticky top-16 z-30 -mx-4 sm:mx-0 px-4 sm:px-0 py-3 bg-paper/85 dark:bg-ink/85 backdrop-blur-md border-b border-paper-2/60 dark:border-surface-800/60"
+  class="scroll-edge scroll-edge-toolbar sticky top-16 z-30 -mx-4 sm:mx-0 px-4 sm:px-0 py-3 bg-surface-50 dark:bg-ink"
   id="projects-toolbar"
 >
   <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -49,9 +53,31 @@ const typeStats = getTypeStats(projects);
       </kbd>
     </label>
 
+    <!-- Result count + reset — next to the search box it reports on. It used to
+         live at the far right of the bar, which on a wide viewport put it most
+         of a screen away from the control that changes it. -->
+    <div class="flex items-center gap-3 shrink-0">
+      <span
+        id="project-count"
+        aria-live="polite"
+        class="font-mono text-xs tabular-nums text-ink-muted dark:text-surface-400"
+      >
+        {projects.length} / {projects.length}
+      </span>
+      <button
+        type="button"
+        data-filter-reset
+        hidden
+        class="tap-slop text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors nav-link-press"
+        style="--tap-slop: -14px"
+      >
+        Reset
+      </button>
+    </div>
+
     <!-- Type filter chips — horizontally scrollable on mobile -->
     <div
-      class="flex items-center gap-2 overflow-x-auto py-0.5 no-scrollbar"
+      class="flex items-center gap-2 overflow-x-auto py-1.5 no-scrollbar"
       role="group"
       aria-label="Filter projects by type"
     >
@@ -59,7 +85,7 @@ const typeStats = getTypeStats(projects);
         type="button"
         data-filter-type="all"
         aria-pressed="true"
-        class="filter-chip filter-chip-active"
+        class="filter-chip tap-slop filter-chip-active"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +103,7 @@ const typeStats = getTypeStats(projects);
         <span class="font-mono text-[10px] tabular-nums opacity-70">{projects.length}</span>
       </button>
       {typeStats.map(({ type, meta, count }) => (
-        <button type="button" data-filter-type={type} aria-pressed="false" class="filter-chip">
+        <button type="button" data-filter-type={type} aria-pressed="false" class="filter-chip tap-slop">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -94,25 +120,6 @@ const typeStats = getTypeStats(projects);
           <span class="font-mono text-[10px] tabular-nums opacity-70">{count}</span>
         </button>
       ))}
-    </div>
-
-    <!-- Result count + reset -->
-    <div class="flex items-center gap-3 sm:ml-auto shrink-0">
-      <span
-        id="project-count"
-        aria-live="polite"
-        class="font-mono text-xs tabular-nums text-ink-muted dark:text-surface-400"
-      >
-        {projects.length} / {projects.length}
-      </span>
-      <button
-        type="button"
-        data-filter-reset
-        hidden
-        class="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors nav-link-press"
-      >
-        Reset
-      </button>
     </div>
   </div>
 </div>
@@ -165,6 +172,9 @@ const typeStats = getTypeStats(projects);
     font-weight: 500;
     color: var(--color-ink-2, #5a524a);
     cursor: pointer;
+    /* 33px visually; the .tap-slop overlay takes the target to 45px without
+       changing the chip, the row height or the gaps. */
+    --tap-slop: -6px;
     transition:
       background-color 0.15s ease,
       border-color 0.15s ease,
@@ -220,7 +230,14 @@ const typeStats = getTypeStats(projects);
 <script>
   // @MX:NOTE: [AUTO] Client-side project filtering — search + type chips, no dependencies.
   // Progressive enhancement: the server renders every card; without JS all stay visible.
+  // Teardown handle — this runs again on every View Transition swap, and the
+  // document-level keydown listener below outlives the swapped-out DOM.
+  let filterTeardown: AbortController | null = null;
+
   function initProjectFilters() {
+    filterTeardown?.abort();
+    filterTeardown = new AbortController();
+    const { signal } = filterTeardown;
     const grid = document.getElementById('project-grid');
     const searchInput = document.getElementById('project-search') as HTMLInputElement | null;
     if (!grid || !searchInput) return;
@@ -273,19 +290,19 @@ const typeStats = getTypeStats(projects);
     }
 
     for (const chip of chips) {
-      chip.addEventListener('click', () => setFilterType(chip.dataset.filterType ?? 'all'));
+      chip.addEventListener('click', () => setFilterType(chip.dataset.filterType ?? 'all'), { signal });
     }
 
-    let debounceTimer: number | undefined;
+    // No debounce. The haystack is precomputed at build time into a data
+    // attribute and the set is a handful of cards, so filtering costs nothing
+    // measurable — the 120ms timer was pure added latency between the keystroke
+    // and the result, on the page's primary interaction.
     searchInput.addEventListener('input', () => {
-      window.clearTimeout(debounceTimer);
-      debounceTimer = window.setTimeout(() => {
-        state.query = searchInput.value;
-        apply();
-      }, 120);
-    });
+      state.query = searchInput.value;
+      apply();
+    }, { signal });
 
-    for (const btn of resetButtons) btn.addEventListener('click', reset);
+    for (const btn of resetButtons) btn.addEventListener('click', reset, { signal });
 
     // "/" focuses search; Escape clears it
     document.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -304,7 +321,7 @@ const typeStats = getTypeStats(projects);
           searchInput.blur();
         }
       }
-    });
+    }, { signal });
 
     apply();
   }
@@ -321,7 +338,15 @@ const typeStats = getTypeStats(projects);
   // the hidden state impossible on any surface that lays the page out at full
   // height and never scrolls — print, full-page screenshots, OG capture and
   // JS-executing crawlers — where a blanket `opacity: 0` left the grid blank.
+  // Teardown handle — same View Transition re-run problem as the filter script.
+  let entranceTeardown: AbortController | null = null;
+  let entranceObserver: IntersectionObserver | null = null;
+
   function initCardEntrances() {
+    entranceTeardown?.abort();
+    entranceTeardown = new AbortController();
+    entranceObserver?.disconnect();
+    const { signal } = entranceTeardown;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const grid = document.getElementById('project-grid');
     if (!grid) return;
@@ -349,9 +374,26 @@ const typeStats = getTypeStats(projects);
       },
       { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
     );
+    entranceObserver = observer;
 
     belowFold.forEach((card) => card.setAttribute('data-entrance', ''));
     belowFold.forEach((card) => observer.observe(card));
+
+    // Retire the entrance once it has played. `.is-visible` runs its keyframes
+    // with `both`, so the filled value keeps overriding any later transition on
+    // the same properties — which is what the filter enter/exit transition
+    // animates. Dropping the class and the attribute together returns the card
+    // to its plain resting state and hands those properties back to CSS.
+    for (const card of belowFold) {
+      card.addEventListener(
+        'animationend',
+        () => {
+          card.classList.remove('is-visible');
+          card.removeAttribute('data-entrance');
+        },
+        { once: true, signal }
+      );
+    }
 
     // Safety net for surfaces that render the page but never scroll it —
     // full-page screenshots, OG capture, JS-executing crawlers. The observer
@@ -359,8 +401,9 @@ const typeStats = getTypeStats(projects);
     // Armed only while no scroll has happened: once the reader scrolls, the
     // observer is demonstrably working and every entrance is left intact.
     let hasScrolled = false;
-    window.addEventListener('scroll', () => { hasScrolled = true; }, { once: true, passive: true });
+    window.addEventListener('scroll', () => { hasScrolled = true; }, { once: true, passive: true, signal });
     window.setTimeout(() => {
+      if (signal.aborted) return;
       if (hasScrolled) return;
       observer.disconnect();
       belowFold.forEach((card) => card.removeAttribute('data-entrance'));
@@ -369,4 +412,9 @@ const typeStats = getTypeStats(projects);
 
   initCardEntrances();
   document.addEventListener('astro:after-swap', initCardEntrances);
+  // The function reads the setting fresh on each call, so re-running it is the
+  // whole response to a mid-session change.
+  window
+    .matchMedia('(prefers-reduced-motion: reduce)')
+    .addEventListener('change', initCardEntrances);
 </script>

@@ -24,7 +24,5 @@ export interface Project {
   repository?: string;
   /** Optional free-form tags, included in search. */
   tags?: string[];
-  /** Pin to the top of the grid and mark with an editorial top rule. */
-  featured?: boolean;
   status?: ProjectStatus;
 }

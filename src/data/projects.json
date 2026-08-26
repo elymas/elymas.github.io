@@ -5,7 +5,6 @@
     "url": "https://elymas.github.io/terms/",
     "type": "game",
     "techStack": ["HTML5", "Vanilla JavaScript", "GitHub Pages"],
-    "featured": true,
     "status": "active"
   },
   {
@@ -14,7 +13,6 @@
     "url": "https://github.com/elymas/claude-usage-dashboard",
     "type": "app",
     "techStack": ["Next.js", "TypeScript", "Supabase"],
-    "featured": true,
     "status": "active"
   },
   {
@@ -23,7 +21,6 @@
     "url": "https://elymas.github.io/agent-seminar/",
     "type": "landing",
     "techStack": ["HTML", "CSS", "JavaScript"],
-    "featured": true,
     "status": "active"
   },
   {
@@ -32,7 +29,6 @@
     "url": "https://elymas.github.io/solar-simulator/",
     "type": "app",
     "techStack": ["Three.js", "TypeScript", "Vite"],
-    "featured": true,
     "status": "active"
   },
   {
@@ -41,7 +37,6 @@
     "url": "https://floaton.cloud",
     "type": "blog",
     "techStack": ["Astro", "MDX", "Tailwind CSS"],
-    "featured": false,
     "status": "active"
   },
   {
@@ -50,25 +45,22 @@
     "url": "https://superworktf.github.io/Superwork_KTNasmedia/",
     "type": "landing",
     "techStack": ["HTML", "CSS", "JavaScript"],
-    "featured": true,
     "status": "active"
   },
   {
-    "name": "아이디어톤 - Idea is All you need",
+    "name": "아이디어톤 — Idea is All you need",
     "description": "AX전략실이 진행하는 전사 아이디어톤 \"Idea is All you need\" 소개 페이지. 행사 개요와 Superwork Workflow, 출시 앱 7종을 인터랙티브 3D 씬으로 소개하는 한국어 랜딩 페이지.",
     "url": "https://elymas.github.io/superwork-onepage/",
     "type": "landing",
     "techStack": ["React", "Three.js", "TypeScript"],
-    "featured": true,
     "status": "active"
   },
   {
-    "name": "SIGNAL NOTE RESEARCH",
+    "name": "Signal Note Research",
     "description": "공개 릴스와 YouTube 영상을 출처별로 정리하고, 영상의 주장·실행 규칙·검증 한계를 분리해 탐색할 수 있는 영상 리서치 아카이브.",
     "url": "https://elymas.github.io/signal-note/",
     "type": "app",
     "techStack": ["React", "Vite", "JavaScript"],
-    "featured": true,
     "status": "active"
   }
 ]

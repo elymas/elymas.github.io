@@ -48,6 +48,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <!-- Fonts: Newsreader (display) + Noto Serif KR (Hangul display) + Geist (body)
          + Geist Mono — Printing Press design language.
+         Axes are requested at the weights the page actually sets, not the full
+         range: Newsreader carries no italic here, and the two Geist faces are
+         used at 400/500. Measured saving is small (141 → 138 @font-face,
+         ~1.3KB of CSS) because Noto Serif KR's ~120 unicode-range subsets
+         dominate the file — those are gated by range, so the browser still
+         fetches only the Hangul it needs. The stylesheet stays render-blocking:
+         `display=swap` already prevents invisible text, and deferring it would
+         swap the font under the H1 after it has painted. Removing the round
+         trip means self-hosting, which is a larger change than this.
          Newsreader carries no Hangul, and a trailing generic `serif` does not win
          the per-glyph fallback once installed Latin families precede it (measured:
          Hangul rendered at the system sans width), so Hangul in a serif heading
@@ -56,7 +65,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Noto+Serif+KR:wght@400..600&family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..600&family=Noto+Serif+KR:wght@400..500&family=Geist:wght@300..600&family=Geist+Mono:wght@400..500&display=swap"
     />
 
     <!-- Theme color for browser chrome -->

@@ -68,7 +68,7 @@ Previews the production build locally.
 Sub-projects are managed through a single JSON file. To add a new project:
 
 1. Open `src/data/projects.json`
-2. Add a new entry to the array — **new entries go at the top** (the grid preserves file order for non-featured projects, so newest-first is a free convention):
+2. Add a new entry to the array — **new entries go at the top** (the grid renders in file order, so newest-first is a free convention):
 
 ```json
 {
@@ -78,7 +78,6 @@ Sub-projects are managed through a single JSON file. To add a new project:
   "type": "landing",
   "techStack": ["React", "TypeScript"],
   "tags": ["threejs", "visualization"],
-  "featured": true,
   "status": "active"
 }
 ```
@@ -96,7 +95,6 @@ Sub-projects are managed through a single JSON file. To add a new project:
 | `techStack` | ✓ | Tech chips shown in mono at the card bottom |
 | `repository` | – | Secondary source-code link; renders a small code icon on the card |
 | `tags` | – | Free-form keywords, included in search only |
-| `featured` | – | `true` pins the card to the top of the grid with an accent border |
 | `status` | – | `"active"` (default), `"coming-soon"` (badge, no link), `"archived"` (dimmed) |
 
 ### Project types

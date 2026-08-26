@@ -67,10 +67,33 @@
     font-family: var(--font-serif);
   }
 
+  /* Tracking is size-specific, never one value for the whole scale: letters
+     read too far apart as type grows and too close as it shrinks, so display
+     sizes take negative tracking and small headings sit near zero. The old
+     blanket -0.025em was right at 60px and jammed the 18px card titles.
+     Leading moves the same way — tight on large type, looser as it shrinks. */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif);
-    letter-spacing: -0.025em;
     font-weight: 400;
+  }
+
+  h1 {
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+
+  h2 {
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  h3 {
+    letter-spacing: -0.005em;
+    line-height: 1.3;
+  }
+
+  h4, h5, h6 {
+    letter-spacing: 0;
   }
 
   body {
@@ -123,19 +146,6 @@
     opacity: 1;
     transform: translateX(0);
   }
-}
-
-/* Orb drift: subtle floating drift for background orbs — loop */
-@keyframes orb-drift-a {
-  0%, 100% { transform: translateY(0) translateX(0); }
-  33%       { transform: translateY(-12px) translateX(6px); }
-  66%       { transform: translateY(6px) translateX(-8px); }
-}
-
-@keyframes orb-drift-b {
-  0%, 100% { transform: translateY(0) translateX(0); }
-  40%       { transform: translateY(10px) translateX(-6px); }
-  70%       { transform: translateY(-6px) translateX(8px); }
 }
 
 /* --------------------------------------------------------------------------
@@ -217,14 +227,10 @@
     translateX(var(--parallax-pointer-x, 0px));
 }
 
-/* Background orb ambient animation */
-.orb-a {
-  animation: orb-drift-a 14s ease-in-out infinite;
-}
-
-.orb-b {
-  animation: orb-drift-b 18s ease-in-out infinite;
-}
+/* The orbs no longer drift on their own. A 14s/18s loop behind a blur, at 30%
+   (light) and 10% (dark) of a near-background tone, is motion nobody can see
+   running on every frame of every visit. What remains is scroll- and
+   pointer-driven: depth the reader causes, not ambient animation. */
 
 /* --------------------------------------------------------------------------
    Card press + hover depth
@@ -234,6 +240,54 @@
    depth. It was also decoration on the page's primary browse surface — every
    card, every visit. The lift and the paper-toned shadow carry the affordance.
    -------------------------------------------------------------------------- */
+
+/* Resting depth. In light mode the card fill sits 1.08:1 from the page — a warm
+   paper palette has no room for a stronger surface step without leaving the
+   design language — so the object boundary is carried by a shadow instead of a
+   darker fill. Bigger surface, deeper shadow, per the material-weight rule. */
+.card-surface {
+  box-shadow:
+    0 1px 2px rgba(27, 24, 22, 0.05),
+    0 4px 12px -6px rgba(27, 24, 22, 0.1);
+}
+
+.dark .card-surface {
+  box-shadow:
+    0 1px 2px rgba(3, 2, 2, 0.25),
+    0 4px 12px -6px rgba(3, 2, 2, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Filter enter/exit — the grid is the page's primary interaction, and it used
+   to hard-cut: `hidden` flips display between two frames with nothing in
+   between. `display` is in the transition list with allow-discrete so the card
+   fades and shrinks out before it leaves layout, and @starting-style gives the
+   return trip a from-value it would otherwise not have (a display:none element
+   has no rendered state to transition from). Browsers without allow-discrete
+   fall back to the old instant cut — no worse than before.
+   -------------------------------------------------------------------------- */
+
+.card-entrance {
+  transition:
+    opacity 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+    scale 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+    display 0.16s allow-discrete;
+}
+
+/* Authored explicitly rather than left to the UA `[hidden]` rule, so the
+   display value the transition animates is one this stylesheet owns. */
+.card-entrance[hidden] {
+  display: none;
+  opacity: 0;
+  scale: 0.97;
+}
+
+@starting-style {
+  .card-entrance:not([hidden]) {
+    opacity: 0;
+    scale: 0.97;
+  }
+}
 
 .card-press {
   /* Every property the hover/active state moves must be listed. This rule is
@@ -285,6 +339,73 @@
       0 8px 24px -4px rgba(3, 2, 2, 0.45),
       0 2px 6px -1px rgba(3, 2, 2, 0.3);
   }
+}
+
+@layer components {
+  /* The `position` these two helpers need lives in a layer on purpose. The rest
+     of this file is deliberately unlayered so it outranks Tailwind utilities —
+     which is exactly wrong here: an unlayered `position: relative` beats the
+     `sticky` utility on the same element, and the header and the toolbar both
+     silently stopped sticking (measured: computed position `relative`, `top-16`
+     then pushing the toolbar 64px down over the grid). In a layer, a position
+     utility on the element wins and a static element still gets its host. */
+  .tap-slop,
+  .scroll-edge {
+    position: relative;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Hit slop — grow a touch target without moving anything
+   The header links and the theme toggle already reserve 44px via min-h-11, but
+   the filter chips (33px) and the hero CTA (20px) are the two controls people
+   actually aim at most, and they were the smallest on the page. An overlay
+   pseudo-element extends the target while the visual size, the layout and the
+   vertical rhythm stay exactly as designed.
+   -------------------------------------------------------------------------- */
+
+.tap-slop::after {
+  content: '';
+  position: absolute;
+  inset: var(--tap-slop, -8px) -4px;
+  border-radius: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   Scroll edge — content dissolves under floating chrome
+   A 1px rule under a sticky bar draws a line the design never asked for and
+   states a boundary that is not really there. A short fade in the chrome's own
+   tone reads as content passing beneath a surface, which is what happens.
+   -------------------------------------------------------------------------- */
+
+.scroll-edge::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 14px;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--edge-color) 85%, transparent),
+    transparent
+  );
+}
+
+/* The two sticky surfaces sit on different grounds — the header over the hero's
+   paper, the toolbar over the page's surface-50 — so each fades from its own. */
+.scroll-edge-header {
+  --edge-color: var(--color-paper);
+}
+
+.scroll-edge-toolbar {
+  --edge-color: var(--color-surface-50);
+}
+
+.dark .scroll-edge-header,
+.dark .scroll-edge-toolbar {
+  --edge-color: var(--color-ink);
 }
 
 /* --------------------------------------------------------------------------
@@ -432,6 +553,12 @@
     animation-iteration-count: 1 !important;
   }
 
+  /* `scroll-smooth` on <html> is motion too — the CTA's jump to #projects was
+     the one animation this switch did not reach. */
+  html {
+    scroll-behavior: auto !important;
+  }
+
   /* Ensure entrance elements render in final state immediately */
   /* Covers both .js-motion-gated and any non-gated fallback selectors */
   .motion-fade-up,
@@ -444,12 +571,6 @@
   .js-motion .motion-type-set {
     opacity: 1 !important;
     transform: none !important;
-  }
-
-  /* Kill orb drifting */
-  .orb-a,
-  .orb-b {
-    animation: none !important;
   }
 
   /* Kill parallax layer transforms */
@@ -467,6 +588,13 @@
   .card-press:hover .card-arrow {
     translate: none !important;
     scale: 1 !important;
+  }
+
+  /* Kill the filter enter/exit transition. Left on, the `display` leg would
+     hold a filtered-out card in layout for 0.16s at full opacity and then pop
+     it — more visible motion than the hard cut it replaced. */
+  .card-entrance {
+    transition: none !important;
   }
 
   /* Kill nav underline animation */
