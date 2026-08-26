@@ -4,7 +4,8 @@
 
 @theme {
   /* Fonts — Printing Press design language (Newsreader display + Geist body) */
-  --font-serif: 'Newsreader', 'Iowan Old Style', 'Charter', Georgia, 'Times New Roman', serif;
+  --font-serif: 'Newsreader', 'Noto Serif KR', 'Iowan Old Style', 'Charter', Georgia,
+    'Times New Roman', 'Nanum Myeongjo', 'Batang', serif;
   --font-sans: 'Geist', -apple-system, 'Helvetica Neue', Helvetica, system-ui, sans-serif;
   --font-mono: 'Geist Mono', 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace;
 
@@ -154,14 +155,27 @@
   transform: translateX(-6px);
 }
 
-/* card-entrance shares motion-fade-up hidden state */
-.js-motion .card-entrance {
+/* card-entrance: hidden ONLY when JS marks the card as below the initial
+   viewport (data-entrance). A card already on screen — and every card when the
+   viewport is tall, as in print or full-page capture — is never hidden, so the
+   grid is always present for print, screenshots and JS-executing crawlers. */
+.card-entrance[data-entrance] {
   opacity: 0;
   transform: translateY(20px);
 }
 
+/* Print never scrolls, so the observer that clears data-entrance never fires.
+   Force the resting state so the grid is always on the page. */
+@media print {
+  .card-entrance[data-entrance] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Triggered state — applied by IntersectionObserver or page-load sequence */
-.motion-fade-up.is-visible {
+.motion-fade-up.is-visible,
+.card-entrance.is-visible {
   animation: paper-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -175,6 +189,7 @@
 
 /* Staggered delay via custom property — JS sets --motion-delay on each element */
 .motion-fade-up.is-visible,
+.card-entrance.is-visible,
 .motion-stamp.is-visible,
 .motion-type-set.is-visible {
   animation-delay: var(--motion-delay, 0ms);
@@ -226,10 +241,23 @@
     rotateX(var(--tilt-x, 0deg))
     rotateY(var(--tilt-y, 0deg))
     translateZ(var(--tilt-z, 0px));
+  /* Every property the hover state actually moves must be listed here. The card
+     no longer carries .ink-press: its `transition` shorthand came later in the
+     cascade and reset this list down to transform+opacity, so the hover lift,
+     shadow and border snapped instantly while only the rotation eased. */
   transition:
     transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+    translate 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    scale 0.12s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
+}
+
+/* Press feedback — `scale`, not `transform`, so it composes with the tilt
+   rotation above instead of replacing it (a pressed card used to snap flat). */
+.card-tilt-inner:active {
+  scale: 0.98;
 }
 
 /* Restrained paper-tone depth shadow — only appears on tilt/hover */
@@ -390,10 +418,10 @@ a:hover .cta-chevron {
   .motion-stamp,
   .motion-type-set,
   .card-entrance,
+  .card-entrance[data-entrance],
   .js-motion .motion-fade-up,
   .js-motion .motion-stamp,
-  .js-motion .motion-type-set,
-  .js-motion .card-entrance {
+  .js-motion .motion-type-set {
     opacity: 1 !important;
     transform: none !important;
   }
@@ -413,6 +441,7 @@ a:hover .cta-chevron {
   /* Kill 3D tilt — return to flat */
   .card-tilt-inner {
     transform: none !important;
+    scale: 1 !important;
     transition: none !important;
   }
 

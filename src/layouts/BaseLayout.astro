@@ -46,12 +46,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Fonts: Newsreader (display) + Geist (body) + Geist Mono — Printing Press design language -->
+    <!-- Fonts: Newsreader (display) + Noto Serif KR (Hangul display) + Geist (body)
+         + Geist Mono — Printing Press design language.
+         Newsreader carries no Hangul, and a trailing generic `serif` does not win
+         the per-glyph fallback once installed Latin families precede it (measured:
+         Hangul rendered at the system sans width), so Hangul in a serif heading
+         dropped to sans mid-line. Noto Serif KR is named explicitly instead. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Noto+Serif+KR:wght@400..600&family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap"
     />
 
     <!-- Theme color for browser chrome -->

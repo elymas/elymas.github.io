@@ -56,7 +56,7 @@ const typeIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
 {isComingSoon ? (
   <!-- Coming-soon: no tilt, no link, entrance only -->
   <div
-    class:list={['card-entrance motion-fade-up', cardBase, 'opacity-80 cursor-default']}
+    class:list={['card-entrance', cardBase, 'opacity-80 cursor-default']}
     style={`--motion-delay: ${staggerMs}ms`}
     data-type={String(project.type).toLowerCase()}
     data-search={haystack}
@@ -86,7 +86,7 @@ const typeIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
 ) : (
   <!-- Active card: 3D tilt wrapper + entrance -->
   <div
-    class="card-entrance motion-fade-up card-tilt-wrapper"
+    class="card-entrance card-tilt-wrapper"
     style={`--motion-delay: ${staggerMs}ms`}
     data-type={String(project.type).toLowerCase()}
     data-search={haystack}
@@ -95,7 +95,7 @@ const typeIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
       href={project.url}
       target="_blank"
       rel="noopener noreferrer"
-      class:list={[cardBase, 'card-tilt-inner ink-press', 'hover:-translate-y-0.5']}
+      class:list={[cardBase, 'card-tilt-inner', 'hover:-translate-y-0.5']}
     >
       <div class="mb-4 flex items-start justify-between gap-3">
         <span class:list={[typeChip]}>

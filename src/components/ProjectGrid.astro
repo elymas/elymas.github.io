@@ -301,21 +301,28 @@ const typeStats = getTypeStats(projects);
 
 <script>
   // @MX:NOTE: [AUTO] Staggered scroll-entrance for project cards via IntersectionObserver
+  // Cards are NOT hidden by CSS on their own: the hidden state is keyed on the
+  // `data-entrance` attribute this script sets, and it is set only on cards that
+  // start below the viewport. A card already on screen simply renders. That makes
+  // the hidden state impossible on any surface that lays the page out at full
+  // height and never scrolls — print, full-page screenshots, OG capture and
+  // JS-executing crawlers — where a blanket `opacity: 0` left the grid blank.
   function initCardEntrances() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const grid = document.getElementById('project-grid');
     if (!grid) return;
 
-    const cards = grid.querySelectorAll<HTMLElement>('.card-entrance');
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.card-entrance'));
+    if (cards.length === 0) return;
 
     if (prefersReducedMotion) {
-      // Render all cards in final state immediately
-      cards.forEach((card) => {
-        card.classList.add('is-visible');
-        card.style.setProperty('--motion-delay', '0ms');
-      });
+      cards.forEach((card) => card.style.setProperty('--motion-delay', '0ms'));
       return;
     }
+
+    const viewportHeight = window.innerHeight;
+    const belowFold = cards.filter((card) => card.getBoundingClientRect().top >= viewportHeight);
+    if (belowFold.length === 0) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -329,7 +336,21 @@ const typeStats = getTypeStats(projects);
       { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
     );
 
-    cards.forEach((card) => observer.observe(card));
+    belowFold.forEach((card) => card.setAttribute('data-entrance', ''));
+    belowFold.forEach((card) => observer.observe(card));
+
+    // Safety net for surfaces that render the page but never scroll it —
+    // full-page screenshots, OG capture, JS-executing crawlers. The observer
+    // only fires on scroll, so without this the grid stays at opacity 0 there.
+    // Armed only while no scroll has happened: once the reader scrolls, the
+    // observer is demonstrably working and every entrance is left intact.
+    let hasScrolled = false;
+    window.addEventListener('scroll', () => { hasScrolled = true; }, { once: true, passive: true });
+    window.setTimeout(() => {
+      if (hasScrolled) return;
+      observer.disconnect();
+      belowFold.forEach((card) => card.removeAttribute('data-entrance'));
+    }, 1500);
   }
 
   initCardEntrances();
