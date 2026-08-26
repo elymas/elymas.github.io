@@ -12,12 +12,12 @@ const featuredCount = projects.filter((p) => p.featured).length;
   <section class="relative overflow-hidden bg-paper dark:bg-ink" id="hero-section">
     <!-- Background orbs — z-plane: back layer (slowest parallax) -->
     <div class="absolute inset-0 -z-10 overflow-hidden hero-layer-back" aria-hidden="true">
-      <div class="orb-a absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-paper-3/10 dark:bg-paper-3/5 blur-3xl"></div>
-      <div class="orb-b absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-paper-3/10 dark:bg-paper-3/5 blur-3xl"></div>
+      <div class="orb-a absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-paper-3/30 dark:bg-paper-3/10 blur-3xl"></div>
+      <div class="orb-b absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-paper-3/30 dark:bg-paper-3/10 blur-3xl"></div>
     </div>
 
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
-      <div class="text-center hero-layer-mid">
+      <div class="text-center">
         <!-- Cloud mark — ink-stamp reveal (step 1 in sequence) -->
         <div class="flex justify-center mb-8 motion-stamp" id="hero-cloud" style="--motion-delay: 0ms">
           <svg
@@ -40,7 +40,7 @@ const featuredCount = projects.filter((p) => p.featured).length;
         <h1
           class="text-4xl sm:text-5xl lg:text-6xl font-serif tracking-tight text-ink dark:text-paper motion-type-set text-balance"
           id="hero-h1"
-          style="--motion-delay: 120ms"
+          style="--motion-delay: 60ms"
         >
           Archive for floating thoughts.
         </h1>
@@ -49,7 +49,7 @@ const featuredCount = projects.filter((p) => p.featured).length;
         <p
           class="text-lg text-ink-2 dark:text-surface-400 mt-4 max-w-xl mx-auto motion-fade-up text-balance"
           id="hero-subtitle"
-          style="--motion-delay: 240ms"
+          style="--motion-delay: 120ms"
         >
           A central hub for projects, blogs, and experiments hosted on GitHub Pages.
         </p>
@@ -59,7 +59,7 @@ const featuredCount = projects.filter((p) => p.featured).length;
           href="#projects"
           class="inline-flex items-center gap-1.5 mt-8 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors ink-press motion-fade-up"
           id="hero-cta"
-          style="--motion-delay: 360ms"
+          style="--motion-delay: 180ms"
         >
           Browse projects
           <svg
@@ -83,7 +83,7 @@ const featuredCount = projects.filter((p) => p.featured).length;
         <p
           class="mt-12 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-2 dark:text-surface-400 motion-fade-up"
           id="hero-meta"
-          style="--motion-delay: 480ms"
+          style="--motion-delay: 240ms"
         >
           {projects.length} projects · {featuredCount} featured · elymas.github.io
         </p>
@@ -129,12 +129,14 @@ const featuredCount = projects.filter((p) => p.featured).length;
       return;
     }
 
+    // 60ms steps, 0.4s animation: the hero settles at ~640ms. The previous
+    // 120ms steps at 0.55s took past a second, which reads as waiting.
     const steps = [
       { id: 'hero-cloud',    delay: 0   },
-      { id: 'hero-h1',       delay: 120 },
-      { id: 'hero-subtitle', delay: 240 },
-      { id: 'hero-cta',      delay: 360 },
-      { id: 'hero-meta',     delay: 480 },
+      { id: 'hero-h1',       delay: 60  },
+      { id: 'hero-subtitle', delay: 120 },
+      { id: 'hero-cta',      delay: 180 },
+      { id: 'hero-meta',     delay: 240 },
     ];
 
     steps.forEach(({ id, delay }) => {
@@ -187,15 +189,17 @@ const featuredCount = projects.filter((p) => p.featured).length;
   }
 
   // -------------------------------------------------------------------------
-  // 3. Hero parallax — scroll drives --parallax-back / --parallax-mid
+  // 3. Hero parallax — scroll drives --parallax-back (orb layer only)
+  //    The hero copy used to ride a second plane at 0.12×. The H1 is the LCP
+  //    element and the thing being read; moving it against the scroll fought
+  //    the reader on every scroll of every visit. Depth stays behind the type.
   // -------------------------------------------------------------------------
   function initHeroParallax() {
     if (prefersReducedMotion) return;
 
     const heroSection = document.getElementById('hero-section');
     const layerBack = heroSection?.querySelector<HTMLElement>('.hero-layer-back');
-    const layerMid = heroSection?.querySelector<HTMLElement>('.hero-layer-mid');
-    if (!heroSection || !layerBack || !layerMid) return;
+    if (!heroSection || !layerBack) return;
 
     let ticking = false;
 
@@ -203,11 +207,8 @@ const featuredCount = projects.filter((p) => p.featured).length;
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
         // Back layer (orbs) moves at 0.3× scroll speed → slower = deeper
-        layerBack!.style.setProperty('--parallax-back', `${scrollY * 0.3}px`);
-        // Mid layer (text content) moves at 0.12× — subtle depth
-        layerMid!.style.setProperty('--parallax-mid', `${scrollY * 0.12}px`);
+        layerBack!.style.setProperty('--parallax-back', `${window.scrollY * 0.3}px`);
         ticking = false;
       });
     }
@@ -225,8 +226,7 @@ const featuredCount = projects.filter((p) => p.featured).length;
 
     const heroSection = document.getElementById('hero-section');
     const layerBack = heroSection?.querySelector<HTMLElement>('.hero-layer-back');
-    const layerMid = heroSection?.querySelector<HTMLElement>('.hero-layer-mid');
-    if (!heroSection || !layerBack || !layerMid) return;
+    if (!heroSection || !layerBack) return;
 
     let pointerTicking = false;
 
@@ -241,16 +241,15 @@ const featuredCount = projects.filter((p) => p.featured).length;
 
         // CSS class rules compose scroll + pointer via CSS custom properties —
         // never touch style.transform here so scroll parallax is never overridden.
+        // Background plane only: the hero copy no longer slides under the cursor.
         layerBack!.style.setProperty('--parallax-pointer-x', `${nx * -18}px`);
-        layerMid!.style.setProperty('--parallax-mid-pointer-x', `${nx * -6}px`);
         pointerTicking = false;
       });
     }
 
     function onPointerLeave() {
-      // Reset pointer custom properties — CSS class rules restore scroll-only state
+      // Reset pointer custom property — CSS restores the scroll-only state
       layerBack!.style.setProperty('--parallax-pointer-x', '0px');
-      layerMid!.style.setProperty('--parallax-mid-pointer-x', '0px');
     }
 
     heroSection.addEventListener('pointermove', onPointerMove, { passive: true });

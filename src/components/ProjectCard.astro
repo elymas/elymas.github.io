@@ -27,8 +27,10 @@ const haystack = [
   .join(' ')
   .toLowerCase();
 
-// Stagger: cap per-row offset so timing stays calm on dense grids
-const staggerMs = Math.min(index % 3, 2) * 80 + Math.floor(index / 3) * 60;
+// Stagger: cap per-row offset so timing stays calm on dense grids.
+// 50/40 keeps the last card of a 3x3 under 200ms; 80/60 pushed it to 280ms,
+// and with a 0.4s entrance that is already 480ms after the card comes into view.
+const staggerMs = Math.min(index % 3, 2) * 50 + Math.floor(index / 3) * 40;
 
 // GitHub mark for repo links / arrow-up-right for live sites
 const linkIcon = isRepo
@@ -38,7 +40,10 @@ const linkIcon = isRepo
 const cardBase = [
   'group relative flex h-full flex-col rounded-xs border p-5 sm:p-6',
   'border-paper-2 dark:border-surface-800 bg-paper dark:bg-surface-800',
-  'transition-[border-color,transform,box-shadow] duration-200',
+  // Only border-color here. Active cards also carry .card-press, whose
+  // unlayered `transition` shorthand outranks this utility entirely — two
+  // competing shorthands on one element is how the hover lift broke before.
+  'transition-[border-color] duration-200',
   project.featured
     ? 'border-primary-500/40 dark:border-primary-400/30 hover:border-primary-500/70 dark:hover:border-primary-400/60'
     : 'hover:border-ink/25 dark:hover:border-surface-600',
@@ -84,9 +89,13 @@ const typeIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
     </div>
   </div>
 ) : (
-  <!-- Active card: 3D tilt wrapper + entrance -->
+  <!-- Active card: entrance wrapper.
+       `relative` is load-bearing: the source-code link below is absolutely
+       positioned against this element, and it used to resolve here only
+       because `perspective` on the old tilt wrapper made it a containing
+       block. With the tilt gone, that positioning has to be explicit. -->
   <div
-    class="card-entrance card-tilt-wrapper"
+    class="card-entrance relative"
     style={`--motion-delay: ${staggerMs}ms`}
     data-type={String(project.type).toLowerCase()}
     data-search={haystack}
@@ -95,7 +104,7 @@ const typeIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
       href={project.url}
       target="_blank"
       rel="noopener noreferrer"
-      class:list={[cardBase, 'card-tilt-inner', 'hover:-translate-y-0.5']}
+      class:list={[cardBase, 'card-press']}
     >
       <div class="mb-4 flex items-start justify-between gap-3">
         <span class:list={[typeChip]}>
@@ -114,7 +123,7 @@ const typeIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
             stroke-width="1.75"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            class="card-arrow h-4 w-4"
             set:html={linkIcon}
           />
         </span>
@@ -159,55 +168,3 @@ const typeIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
     )}
   </div>
 )}
-
-<script>
-  // @MX:NOTE: [AUTO] Pointer-reactive 3D tilt for project cards
-  // Max 8° tilt, smooth easing, disabled on touch + reduced-motion.
-  function initCardTilt() {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isTouchPrimary = window.matchMedia('(hover: none)').matches;
-
-    if (prefersReducedMotion || isTouchPrimary) return;
-
-    const wrappers = document.querySelectorAll<HTMLElement>('.card-tilt-wrapper');
-
-    wrappers.forEach((wrapper) => {
-      const inner = wrapper.querySelector<HTMLElement>('.card-tilt-inner');
-      if (!inner) return;
-
-      let ticking = false;
-
-      function onPointerMove(e: PointerEvent) {
-        if (ticking || !inner) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          if (!inner) { ticking = false; return; }
-          const rect = wrapper.getBoundingClientRect();
-          const dx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
-          const dy = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
-
-          const maxTilt = 8;
-          inner.style.setProperty('--tilt-x', `${-dy * maxTilt}deg`);
-          inner.style.setProperty('--tilt-y', `${dx * maxTilt}deg`);
-          inner.style.setProperty('--tilt-z', `${Math.abs(dx * dy) * 6 + 2}px`);
-          inner.setAttribute('data-tilting', '');
-          ticking = false;
-        });
-      }
-
-      function onPointerLeave() {
-        if (!inner) return;
-        inner.style.setProperty('--tilt-x', '0deg');
-        inner.style.setProperty('--tilt-y', '0deg');
-        inner.style.setProperty('--tilt-z', '0px');
-        inner.removeAttribute('data-tilting');
-      }
-
-      wrapper.addEventListener('pointermove', onPointerMove, { passive: true });
-      wrapper.addEventListener('pointerleave', onPointerLeave, { passive: true });
-    });
-  }
-
-  initCardTilt();
-  document.addEventListener('astro:after-swap', initCardTilt);
-</script>

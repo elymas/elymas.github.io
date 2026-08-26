@@ -170,8 +170,15 @@ const typeStats = getTypeStats(projects);
       border-color 0.15s ease,
       color 0.15s ease;
   }
-  .filter-chip:hover {
-    border-color: color-mix(in srgb, var(--color-ink, #1b1816) 30%, transparent);
+    @media (hover: hover) and (pointer: fine) {
+    .filter-chip:hover {
+      border-color: color-mix(in srgb, var(--color-ink, #1b1816) 30%, transparent);
+    }
+  }
+  /* The chips are the most-clicked control on the page and gave no press
+     feedback at all. 0.12s puts it in the button-feedback band. */
+  .filter-chip:active {
+    scale: 0.97;
   }
   .filter-chip-active {
     background: var(--color-ink, #1b1816);
@@ -182,8 +189,10 @@ const typeStats = getTypeStats(projects);
     border-color: var(--color-surface-700, #5a524a);
     color: var(--color-surface-300, #e7dcca);
   }
-  :global(.dark) .filter-chip:hover {
-    border-color: color-mix(in srgb, var(--color-paper, #f4efe6) 40%, transparent);
+    @media (hover: hover) and (pointer: fine) {
+    :global(.dark) .filter-chip:hover {
+      border-color: color-mix(in srgb, var(--color-paper, #f4efe6) 40%, transparent);
+    }
   }
   :global(.dark) .filter-chip-active {
     background: var(--color-paper, #f4efe6);
@@ -193,6 +202,11 @@ const typeStats = getTypeStats(projects);
   .filter-chip:focus-visible {
     outline: 2px solid var(--color-primary-500, #c80027);
     outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .filter-chip:active {
+      scale: 1;
+    }
   }
   .no-scrollbar {
     scrollbar-width: none;

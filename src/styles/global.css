@@ -182,15 +182,15 @@
 /* Triggered state — applied by IntersectionObserver or page-load sequence */
 .motion-fade-up.is-visible,
 .card-entrance.is-visible {
-  animation: paper-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: paper-rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .motion-stamp.is-visible {
-  animation: ink-stamp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: ink-stamp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .motion-type-set.is-visible {
-  animation: type-set 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: type-set 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* Staggered delay via custom property — JS sets --motion-delay on each element */
@@ -202,10 +202,12 @@
 }
 
 /* --------------------------------------------------------------------------
-   Hero parallax layers — paper depth planes
-   JS updates --parallax-back / --parallax-mid (scroll) via setProperty.
-   JS updates --parallax-pointer-x (pointer) via setProperty — never via
-   style.transform, so scroll parallax is never overridden.
+   Hero parallax — one background depth plane, orbs only.
+   The mid layer carried the hero copy. Moving the H1 against the scroll (and
+   sideways on pointer) fought the reader on the LCP element every visit, so
+   that plane is gone: depth belongs behind the type, never on it.
+   JS updates --parallax-back (scroll) and --parallax-pointer-x (pointer) via
+   setProperty — never via style.transform, so the two never overwrite.
    -------------------------------------------------------------------------- */
 
 .hero-layer-back {
@@ -213,13 +215,6 @@
   transform:
     translateY(var(--parallax-back, 0px))
     translateX(var(--parallax-pointer-x, 0px));
-}
-
-.hero-layer-mid {
-  will-change: transform;
-  transform:
-    translateY(var(--parallax-mid, 0px))
-    translateX(var(--parallax-mid-pointer-x, 0px));
 }
 
 /* Background orb ambient animation */
@@ -232,52 +227,64 @@
 }
 
 /* --------------------------------------------------------------------------
-   3D card tilt — pointer-reactive letterpress depth
-   JS sets --tilt-x, --tilt-y, --tilt-z on the card wrapper.
-   The card inner lifts in Z; shadow stays paper-toned.
+   Card press + hover depth
+   The pointer-tracked 3D tilt that lived here is gone. It read the pointer
+   position straight into a rotation with no spring, and a 0.18s transform
+   transition on a per-frame value trails the cursor rather than reading as
+   depth. It was also decoration on the page's primary browse surface — every
+   card, every visit. The lift and the paper-toned shadow carry the affordance.
    -------------------------------------------------------------------------- */
 
-.card-tilt-wrapper {
-  perspective: 800px;
-  transform-style: preserve-3d;
-}
-
-.card-tilt-inner {
-  transform:
-    rotateX(var(--tilt-x, 0deg))
-    rotateY(var(--tilt-y, 0deg))
-    translateZ(var(--tilt-z, 0px));
-  /* Every property the hover state actually moves must be listed here. The card
-     no longer carries .ink-press: its `transition` shorthand came later in the
-     cascade and reset this list down to transform+opacity, so the hover lift,
-     shadow and border snapped instantly while only the rotation eased. */
+.card-press {
+  /* Every property the hover/active state moves must be listed. This rule is
+     unlayered, so it outranks any Tailwind `transition-*` utility on the same
+     element — an incomplete list here makes hover snap. */
   transition:
-    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
     translate 0.18s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.18s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.18s cubic-bezier(0.22, 1, 0.36, 1),
     scale 0.12s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
 }
 
-/* Press feedback — `scale`, not `transform`, so it composes with the tilt
-   rotation above instead of replacing it (a pressed card used to snap flat). */
-.card-tilt-inner:active {
+/* Press feedback — `scale`, not `transform`, so it composes with the hover
+   lift (a `translate` utility) instead of replacing it. */
+.card-press:active {
   scale: 0.98;
 }
 
-/* Restrained paper-tone depth shadow — only appears on tilt/hover */
-.card-tilt-inner:where(:hover, [data-tilting]) {
-  box-shadow:
-    0 8px 24px -4px rgba(27, 24, 22, 0.12),
-    0 2px 6px -1px rgba(27, 24, 22, 0.08);
+.card-arrow {
+  transition: translate 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Dark mode: shadow stays ink-toned */
-.dark .card-tilt-inner:where(:hover, [data-tilting]) {
-  box-shadow:
-    0 8px 24px -4px rgba(3, 2, 2, 0.45),
-    0 2px 6px -1px rgba(3, 2, 2, 0.3);
+/* Restrained paper-tone depth shadow. Hover-capable pointers only: a tap on a
+   touch device fires :hover and leaves the card stuck in it. */
+@media (hover: hover) and (pointer: fine) {
+  /* The lift lives here, not on a Tailwind hover utility. Tailwind v4 does
+     guard its hover variant (the built CSS wraps it in `@media(hover:hover)`),
+     so this is not a correctness fix — it is consolidation: the lift, the
+     shadow and the pointer guard are one rule the transition list above
+     already covers, instead of the lift living apart from the shadow it
+     belongs to. Uses `translate`, not `transform`, so it composes with the
+     `scale` on :active rather than replacing it. */
+  .card-press:hover {
+    translate: 0 -2px;
+    box-shadow:
+      0 8px 24px -4px rgba(27, 24, 22, 0.12),
+      0 2px 6px -1px rgba(27, 24, 22, 0.08);
+  }
+
+  /* Same, for the link arrow's nudge — previously two group-hover utilities. */
+  .card-press:hover .card-arrow {
+    translate: 2px -2px;
+  }
+
+  /* Dark mode: shadow stays ink-toned */
+  .dark .card-press:hover {
+    box-shadow:
+      0 8px 24px -4px rgba(3, 2, 2, 0.45),
+      0 2px 6px -1px rgba(3, 2, 2, 0.3);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -310,8 +317,10 @@
   transition: width 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.nav-link-press:hover::after {
-  width: 100%;
+@media (hover: hover) and (pointer: fine) {
+  .nav-link-press:hover::after {
+    width: 100%;
+  }
 }
 
 /* CTA chevron nudge — subtle press chevron movement */
@@ -319,8 +328,10 @@
   transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-a:hover .cta-chevron {
-  transform: translateY(2px);
+@media (hover: hover) and (pointer: fine) {
+  a:hover .cta-chevron {
+    transform: translateY(2px);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -329,12 +340,14 @@ a:hover .cta-chevron {
    -------------------------------------------------------------------------- */
 
 @supports (view-transition-name: none) {
+  /* Exit is faster than entry, and both ease out: ease-in withholds motion in
+     the first frames — exactly where the reader is looking. */
   ::view-transition-old(root) {
-    animation: 0.3s ease-in both fade-out-vt;
+    animation: 0.2s cubic-bezier(0.22, 1, 0.36, 1) both fade-out-vt;
   }
 
   ::view-transition-new(root) {
-    animation: 0.35s ease-out both fade-in-vt;
+    animation: 0.3s cubic-bezier(0.22, 1, 0.36, 1) both fade-in-vt;
   }
 
   @keyframes fade-out-vt {
@@ -407,15 +420,16 @@ a:hover .cta-chevron {
    -------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  /* Kill all keyframe animations */
+  /* Keyframe animations are killed wholesale. Transitions are NOT: "reduce"
+     means less movement, not no transition, and the colour/opacity eases that
+     tell the reader a state changed are the ones worth keeping. Every
+     transition that actually moves something is pinned individually below. */
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    transition-delay: 0ms !important;
   }
 
   /* Ensure entrance elements render in final state immediately */
@@ -439,16 +453,20 @@ a:hover .cta-chevron {
   }
 
   /* Kill parallax layer transforms */
-  .hero-layer-back,
-  .hero-layer-mid {
+  .hero-layer-back {
     transform: none !important;
   }
 
-  /* Kill 3D tilt — return to flat */
-  .card-tilt-inner {
-    transform: none !important;
+  /* Pin the card lift, the arrow nudge and the press. `translate` is named
+     explicitly rather than `transform`: both movements set the `translate`
+     property, which `transform: none` does not reach. The colour transitions
+     on the same elements survive — reduced, not removed. */
+  .card-press,
+  .card-press:hover,
+  .card-arrow,
+  .card-press:hover .card-arrow {
+    translate: none !important;
     scale: 1 !important;
-    transition: none !important;
   }
 
   /* Kill nav underline animation */
@@ -457,7 +475,9 @@ a:hover .cta-chevron {
   }
 
   /* Kill CTA chevron nudge */
-  .cta-chevron {
+  .cta-chevron,
+  a:hover .cta-chevron {
+    transform: none !important;
     transition: none !important;
   }
 

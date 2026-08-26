@@ -76,9 +76,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     </script>
     <ClientRouter />
   </head>
-  <body
-    class="min-h-screen flex flex-col bg-surface-50 text-ink dark:bg-ink dark:text-paper transition-colors duration-200"
-  >
+  <!-- No colour transition here. It eased the body background over 200ms while
+       every card, border and glyph switched instantly, so a theme flip read as
+       a two-stage flash. Switching everything at once is the honest version. -->
+  <body class="min-h-screen flex flex-col bg-surface-50 text-ink dark:bg-ink dark:text-paper">
     <!-- Paper grain — tactile texture layer, sits above everything but never intercepts input -->
     <div class="grain-overlay" aria-hidden="true"></div>
     <Header />
