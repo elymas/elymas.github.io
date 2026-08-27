@@ -32,8 +32,8 @@
     "status": "active"
   },
   {
-    "name": "Tech Blog",
-    "description": "A personal tech blog covering web development, cloud architecture, and developer tooling. Written with practical examples and deep-dive tutorials.",
+    "name": "Floating & Archiving",
+    "description": "A text-first archive of personal reflection. Essays and notes on the thoughts that drift up, kept in order rather than in a feed.",
     "url": "https://floaton.cloud",
     "type": "blog",
     "techStack": ["Astro", "MDX", "Tailwind CSS"],
